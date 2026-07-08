@@ -1,0 +1,14 @@
+{
+  "name": "pixel-flow",
+  "owner": {"name": "Atomic 47 Labs", "url": "https://github.com/Atomic-47-Labs"},
+  "metadata": {"description": "Skills & tools for the Pixel Flow visual instruments.", "version": "1.0.0"},
+  "plugins": [
+    {
+      "name": "pixel-flow-vibe",
+      "source": "./pixel-flow-vibe",
+      "description": "Vibe a look with words: author a Pixel Flow config for the Nodes or Studio app and get a shareable #cfg= link.",
+      "version": "1.0.0",
+      "category": "creative"
+    }
+  ]
+}

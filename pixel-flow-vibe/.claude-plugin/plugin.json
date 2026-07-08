@@ -1,0 +1,8 @@
+{
+  "name": "pixel-flow-vibe",
+  "description": "Vibe-code the Pixel Flow apps from natural language: author a config, encode it into a shareable #cfg= URL the app auto-loads. Works with Pixel Flow Nodes (dataflow graph) and Pixel Flow Studio (zones/sequencer).",
+  "version": "1.0.0",
+  "author": {"name": "Atomic 47 Labs"},
+  "homepage": "https://pixel-flow.atomic47.co",
+  "keywords": ["visuals","vj","video-synth","generative","touchdesigner","shareable"]
+}
