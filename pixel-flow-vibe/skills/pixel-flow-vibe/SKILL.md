@@ -18,6 +18,12 @@ Turn a natural-language description of a visual into a **Pixel Flow config**, en
    `reference/schema-nodes.md`. Choose when the user says nodes/graph/patch/dataflow, wants explicit
    signal-flow chains (source → filter → feedback → output), or asks to vibe the node app. Encode with
    `--nodes`.
+   **v2** (`/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes-v2/`, a multi-file Vite project — run
+   `nvm use 20 && npm run dev`) adds signal ops (Beat Clock, Envelope, Random Walk, Smoother, Remap,
+   Logic, Step Seq), geometry/particle ops (Grid, Point Cloud, Particle Field, Instancer) and a Three.js
+   **Render 3D** node — all documented in the "v2 nodes" section of `reference/schema-nodes.md`. The
+   `#cfg=` codec is unchanged, so `encode.py … --nodes` still works; v2-only nodes just need a host serving
+   v2 (the deployed `pixel-flow.atomic47.co` still serves the legacy single-file nodes app until v2 ships).
 
 Read the matching schema file FIRST, every run.
 Codec (both apps): `scripts/encode.py` — JSON config → `#cfg=` URL (and `--decode` back).
