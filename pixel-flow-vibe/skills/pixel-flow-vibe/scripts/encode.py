@@ -72,7 +72,9 @@ def main():
     if a.nodes and a.app == DEFAULT_APP:
         a.app = DEFAULT_APP_NODES
     if a.live and not a.base:
-        a.base = LIVE_HOST + "/" + ("pixel-flow-nodes.html" if (a.nodes or is_graph) else "pixel-flow-studio-pro.html")
+        # nodes → the deployed v2 app at /pixel-flow-nodes/ . Link it directly: the old
+        # /pixel-flow-nodes.html now 302s there, and a redirect can drop the #cfg= fragment.
+        a.base = LIVE_HOST + "/" + ("pixel-flow-nodes/" if (a.nodes or is_graph) else "pixel-flow-studio-pro.html")
 
     if a.cam or a.mic or a.image:
         src = cfg.setdefault("src", {})

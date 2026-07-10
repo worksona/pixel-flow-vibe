@@ -453,3 +453,109 @@ harder, close a fist to send a ripple. Audio: a `noiseosc`(pink) → `filter`(ba
 `audioout` particle drone, `mod noiseosc.level` **and** `filter.cutoff` by `h#spread` (fingertip distance →
 volume + brightness), `mod reverb.mix` by `h#fist` (a fist swells the ripple's reverb). `scene` = the field
 big with a live-cam inset. One hand drives the field **and** its voice.
+
+## v2 nodes — round 10 (Modular Rack expansion · VCV-style patching utilities)
+
+The utilities that make the round-5 modular synth patch like a real rack. All `family:'CHOP'`,
+`cat:'Synth'`. Audio-rate cables now render AMBER in the editor (audio node → audio input);
+control CV stays green. `adsr` gained a multi-output: `"env#env"` is the envelope as control CV
+(mod visuals with the exact shape of the note).
+
+- `seqx` (Pattern Seq) — 2 inputs `clock`,`reset` · **multi-output** `#pitch`(primary, 0..1)
+  `#gate`(1/0) `#vel`(0..1) `#eoc`(pulse at wrap) · steps[1,16]=8, bpm[20,300]=120 (free-run when
+  no clock wired; 8th notes, Speed-knob aware), dir: `fwd rev pendulum random`, gatelen[.05,.95]=.5 ·
+  lanes live in `params.on`/`params.pitch`/`params.vel` (arrays, length=steps) · drag-editable
+  pitch grid on the card, pitch+velocity lanes in the Inspector. Slave it to a Beat Clock (pulse),
+  chain patterns via eoc→clock of the next seq.
+- `clockdiv` (Clock Divide) — 2 inputs `clock`,`reset` · **multi-output** `#x2 #x1 #d2 #d4 #d8` ·
+  pw[.1,.9]=.5 pulse width · divides/multiplies one clock into five synced pulse streams; LED row
+  on the card. ×2 is phase-locked to the measured incoming period.
+- `quant` (Quantizer) — 1 input `cv` (0..1) · root, scale (`penta major minor dorian chrom`),
+  octave[0,6]=2, span[1,4]=2 octaves, shift[-12,12]=0 semitones · outputs a RAW MIDI NOTE NUMBER
+  (>1.5), which `osc`/`wtosc` pitch inputs play exactly. Noise → `sh` → `quant` → `osc` = generative
+  melody. Live keyboard display.
+- `atten` (Attenuvert) — 1 input `in` · scale[-2,2]=1 (negative inverts), offset[-1,1]=0 ·
+  out = in×scale+offset. The CV glue (bipolar LFO → 0..1 etc).
+- `vca` — 2 inputs `in`(AUDIO),`cv` · level[0,1]=.8, response: `linear exp` · audio × control
+  amplitude: tremolo (LFO→cv), velocity (seqx#vel→cv), sidechain pump (inverted envelope→cv).
+  No cv wired = wide open.
+- `wtosc` (Wavetable Osc, AUDIO source) — **1 image input** + 2 signal inputs `pitch`,`scan` ·
+  root/octave/range/scale/glide/level like `osc`, plus scan[0,1]=.5 (which pixel row), harm[4,32]=24,
+  refresh ms[30,500]=90 · ITS WAVETABLE IS THE WIRED IMAGE: samples one row of the TOP each refresh,
+  DFT → PeriodicWave. Camera/feedback/reaction-diffusion literally become the timbre; sweep scan
+  (or wire an LFO into it) to morph. Card shows the extracted cycle + scan marker.
+- `mix4` (Mixer 4ch, AUDIO) — 4 audio inputs `a b c d` · Master level + per-channel Gain (g1..g4)
+  and Pan (p1..p4); mutes are `params.m1..m4` (0/1), toggled by the A–D buttons on the card ·
+  live per-channel meters on the card.
+
+Rack recipe: `clock`(pulse) → `seqx.clock` + `clockdiv.clock`; `seqx#pitch → quant → osc.pitch`;
+`seqx#gate → adsr.gate`; `seqx#vel → vca.cv`; `osc → filter → adsr → vca → mix4 → audioout`;
+`noiseosc → adsr2` (gate `clockdiv#d2`) → `mix4.b`; `lfo → atten → filter.cutoff`; mod a visual
+from `adsr#env`. See presets **Rack: Seq × Quant** and **Rack: Wavetable Camera** (Synth pack).
+
+## v2 nodes — round 11 (Modulation bench · rack skin & HP-grid)
+
+Four control modules (`family:'CHOP'`, `cat:'Synth'`), all serialize in `#cfg=`:
+
+- `lfo4` (Quad LFO) — no inputs · **multi-output** `#a #b #c #d` (bipolar −1..1) · mode: `quad free`
+  =quad, rate1..rate4[.02,8], wave1..wave4: `sine tri square saw` · QUAD locks all lanes to rate1 at
+  0/90/180/270° phase (four destinations breathing together); FREE = four independent LFOs. Four
+  stacked mini-scopes on the card.
+- `cvmix` (CV Mixer) — 3 signal inputs `a b c` · g1/g2/g3[-2,2]=1 (attenuverters, negative inverts),
+  offset[-1,1]=0 · out = a·g1+b·g2+c·g3+offset. Blend envelope+LFO+random into ONE modulation.
+- `slew` — 1 signal input · rise[0,5]=.2, fall[0,5]=.2 (seconds per unit of travel) · rate-limits a
+  signal. Quantizer → Slew → Osc pitch = portamento; gate → Slew = swells.
+- `bern` (Bernoulli Gate) — 1 signal input `gate` · **multi-output** `#a #b` · prob[0,1]=.5 · each
+  rising gate is routed to A (probability P) or B. Clock → bern → tight-hat ADSR / open-hat ADSR.
+
+Also: `vca` now shows a LED-ladder level meter on its card.
+
+**Rack skin & HP-grid** (editor-side, not part of `#cfg=`): View ▾ → **🎛 Rack skin** (persists)
+renders all Synth/Signal/Timeline CHOP cards as VCV-style modules — panel chrome, jack ports,
+**rotary knobs on the card** for each module's key params, HP-based widths, drag snapping to
+horizontal rails, **⫴ Rackify** (auto-packs modules into rows), and sagging patch cables (audio
+cables amber, CV green). Graphs authored via `#cfg=` are unaffected; the skin is a view mode.
+
+Bench recipe: `lfo4`(quad) `#a` → `cvmix.a`, `adsr#env` → `cvmix.b` → `filter.cutoff`;
+`clock` → `bern` → two noise ADSRs (closed/open hat); `seqx#pitch → quant → slew → osc` (portamento);
+mod visuals from `lfo4#c/#d`. See preset **Rack: Modulation Bench** (Synth pack).
+
+## v2 nodes — round 12 (Music core: Chords · Drum · Compressor · module colours)
+
+- `chords` (CHOP, `cat:'Synth'`) — 2 inputs `clock`,`reset` · **multi-output** `#root #third #fifth
+  #seventh #bass` (raw MIDI notes — wire straight into `osc`/`wtosc` pitch), `#gate` (drops for 50ms
+  at each change → retrigger pads), `#step` · steps[1,8]=4, root, mode: `major minor`, octave[0,5]=2,
+  bpm, beats/chord[1,16]=4 · progression lives in `params.prog` (array of scale degrees 1–7, e.g.
+  `[1,6,3,7]` = i VI III VII). Advance from a clock (one chord per pulse — feed `clockdiv#d8` for one
+  chord per bar) or free-run. THE harmony every part agrees on: `#bass`→bass osc, root/3rd/5th→three
+  pad oscs, lead stays in the same key via `quant`.
+- `drum` (CHOP audio, `cat:'Synth'`) — 1 input `gate` · type: `kick snare hat clap`, tune[.5,2],
+  decay[.03,1], level · synthesized one-shot percussion (kick = pitch-dropping sine + click; hat decay
+  .05 closed / .3+ open). Four drums + Pattern Seqs = a drum machine.
+- `comp` (CHOP audio) — 1 audio input · thresh dB[-60,0]=-18, ratio[1,20]=4, attack, release,
+  makeup[0,2.5]=1.25 · master-bus compressor with GR meter. Put before `audioout`.
+
+**Module colours:** rack modules now carry family accents (gold oscillators, cyan filters, pink
+envelopes, purple time, teal CV utils, orange modulators, orchid chords, white drums, salmon bus);
+green remains the connector colour (signal ports/CV wires), amber = audio cables. Editor-side only.
+
+**Full-song recipe** (see preset "Rack: Full Track", Synth pack): `clock`(8ths) → 3 drum `seqx`
+patterns → `drum` voices → drum-bus `mix4`; `clockdiv#d8` → `chords`; `ch#bass` → bass osc→filter→
+adsr→`vca` ducked by `atten`(kick gate, scale −.55 offset 1)→`slew`; `ch#root/#third/#fifth` → three
+detuned pad oscs → mixer→filter→adsr(gate `ch#gate`)→reverb→ducked vca; lead `seqx`→`quant`→`slew`→
+osc→adsr→`delay`(.37 dotted-8th); everything → master `mix4` → `comp` → `audioout`.
+
+## v2 — round 13 (timing: lookahead scheduler)
+
+Sequencing is now sample-accurate: a lookahead scheduler on the AudioContext clock schedules ADSR
+gates, Drum hits and Osc/WTOsc pitch at exact step times when the timing chain is predictable —
+`seqx`/`chords` free-running, or clocked by a `clock` (optionally through `clockdiv`), with one hop
+through `bern` (tossed at schedule time) or a pure `quant`. A `slew` in a pitch chain intentionally
+falls back to per-frame glide. No schema changes — same graphs, tighter time; authoring guidance:
+prefer `clock` → `seqx`/`chords` chains (predictable = scheduled) over exotic gate chains.
+
+Round-13 additions: `duck` (CHOP audio, cat Synth) — 2 inputs `in`(audio),`gate` · amount[0,1]=.6,
+dip s[.001,.08]=.015, release[.05,1]=.25, level[0,1]=1 · sidechain ducker: each gate dips the audio
+path and recovers — wire `gate ← <kickseq>#gate` and the dip is scheduled sample-accurately with the
+kick. Pitch chains `#pitch → [quant] → [slew] → osc/wtosc` are now also scheduled exactly (a slew
+becomes the note's glide). Recipe: bass/pad → `duck` → mixer, duck.gate ← kick seq gate.

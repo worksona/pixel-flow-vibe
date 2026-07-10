@@ -18,12 +18,20 @@ Turn a natural-language description of a visual into a **Pixel Flow config**, en
    `reference/schema-nodes.md`. Choose when the user says nodes/graph/patch/dataflow, wants explicit
    signal-flow chains (source → filter → feedback → output), or asks to vibe the node app. Encode with
    `--nodes`.
-   **v2** (`/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes-v2/`, a multi-file Vite project — run
-   `nvm use 20 && npm run dev`) adds signal ops (Beat Clock, Envelope, Random Walk, Smoother, Remap,
-   Logic, Step Seq), geometry/particle ops (Grid, Point Cloud, Particle Field, Instancer) and a Three.js
-   **Render 3D** node — all documented in the "v2 nodes" section of `reference/schema-nodes.md`. The
-   `#cfg=` codec is unchanged, so `encode.py … --nodes` still works; v2-only nodes just need a host serving
-   v2 (the deployed `pixel-flow.atomic47.co` still serves the legacy single-file nodes app until v2 ships).
+   **v2 is now the deployed nodes app** — `https://pixel-flow.atomic47.co/pixel-flow-nodes/` serves it,
+   so `--live --nodes` links open with every v2 node available. (Source: the multi-file Vite project at
+   `/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes-v2/` — run `nvm use 20 && npm run dev` for
+   localhost:5173.) The `#cfg=` codec is unchanged, so `encode.py … --nodes` works against either host.
+   v2 adds, across rounds 1–13 of `reference/schema-nodes.md`: signal ops (Beat Clock, Envelope, Random
+   Walk, Smoother, Remap, Logic, Step Seq), geometry/particle/3D ops (Grid, Point Cloud, Particle Field,
+   Instancer, Voronoi, Truchet, Spirograph, **Render 3D**, Points 3D, Terrain 3D), algorithmic sources
+   (CA, fractals, L-system, CPPN, De Jong), DAT data/text ops, **Scene & Timeline** (scene compositor,
+   transport, media bank, HUD, scope), **vision→control** (hand/face/body/object tracking, video sensor,
+   onset), **Shell Melody** (shell CA, reveal, sonify), and a full **modular synth rack**: Oscillator /
+   Wavetable Osc (its wavetable is an image) / Noise / Filter / ADSR / VCA / Duck / Delay / Reverb /
+   Sample & Hold / Mixer 4ch / Compressor / Audio Out, driven by Pattern Seq, Chords, Clock Divide,
+   Quantizer, Attenuvert, Quad LFO, CV Mixer, Slew, Bernoulli, and Drum voices — with a lookahead
+   scheduler giving sample-accurate timing.
 
 Read the matching schema file FIRST, every run.
 Codec (both apps): `scripts/encode.py` — JSON config → `#cfg=` URL (and `--decode` back).
