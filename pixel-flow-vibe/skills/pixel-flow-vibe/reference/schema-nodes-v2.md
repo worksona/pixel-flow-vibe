@@ -1,6 +1,19 @@
-# Pixel Flow NODES config schema (authoritative)
+# Pixel Flow NODES v2 config schema (authoritative — DEFAULT TARGET)
 
-Target app: `/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes.html` — a TouchDesigner-style dataflow
+**v2 is the deployed Nodes app.** `https://pixel-flow.atomic47.co/pixel-flow-nodes/` serves it, so
+`encode.py … --nodes --live` produces links with every operator below available. Source: the Vite
+project at `/Users/davidolsson/WORKSONA/pixel-flow/nodes-v2/` (`nvm use 20 && npm run dev` -> localhost:5173, or
+`encode.py … --nodes --dev`).
+
+v2 is a **superset of v1** — everything in the core catalog below still exists, and the `#cfg=` codec
+is byte-identical, so a config authored for either generation opens on the other (v1 silently drops
+node types it does not know). The v2-only operators start at "v2 nodes" further down.
+
+A node declares `family` (`TOP`=image / `CHOP`=signal — how it cooks) and optional `group`
+(`SOP`=geometry/3D — how it is coloured/catalogued). Author these exactly like any other node; only
+numeric params modulate.
+
+Target app: `/Users/davidolsson/WORKSONA/pixel-flow/v1/pixel-flow-nodes.html` — a TouchDesigner-style dataflow
 editor. A config is the **graph itself**:
 
 ```json
@@ -136,7 +149,7 @@ All filters below take **1 image input** unless noted. Palette categories in par
 ## v2 nodes (Pixel Flow Nodes v2)
 
 **Availability:** these operators exist in **Pixel Flow Nodes v2** (the multi-file project at
-`/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes-v2/`, run via `npm run dev`), not in the
+`/Users/davidolsson/WORKSONA/pixel-flow/nodes-v2/`, run via `npm run dev`), not in the
 legacy single-file `pixel-flow-nodes.html`. The `#cfg=` codec is unchanged, so the SAME
 `encode.py … --nodes` round-trip works — just target a host serving v2. A node declares
 `family` (`TOP`=image / `CHOP`=signal — how it cooks) and optional `group` (`SOP`=geometry/3D —
@@ -559,3 +572,4 @@ dip s[.001,.08]=.015, release[.05,1]=.25, level[0,1]=1 · sidechain ducker: each
 path and recovers — wire `gate ← <kickseq>#gate` and the dip is scheduled sample-accurately with the
 kick. Pitch chains `#pitch → [quant] → [slew] → osc/wtosc` are now also scheduled exactly (a slew
 becomes the note's glide). Recipe: bass/pad → `duck` → mixer, duck.gate ← kick seq gate.
+

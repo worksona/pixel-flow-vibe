@@ -17,6 +17,13 @@ Usage
   encode.py config.json --app /path/to/pixel-flow-studio-pro.html
   encode.py config.json --base https://example.com/pixel-flow.html
 
+  # Nodes v2 (the current graph app) — deployed, or the local vite dev server
+  encode.py graph.json --nodes --live
+  encode.py graph.json --nodes --dev
+
+  # Nodes v1 (legacy single-file) — bare --nodes resolves to the local v1 HTML
+  encode.py graph.json --nodes
+
   # emit just the base64 code (for the app's Share -> Load Config box)
   encode.py config.json --code
 
@@ -26,9 +33,11 @@ Usage
 """
 import sys, json, base64, argparse, os, re
 
-DEFAULT_APP = "/Users/davidolsson/Desktop/pixel-flow/pixel-flow-studio-pro.html"
-DEFAULT_APP_NODES = "/Users/davidolsson/Desktop/pixel-flow/pixel-flow-nodes.html"
-LIVE_HOST = "https://pixel-flow.atomic47.co"  # deployed site
+REPO = "/Users/davidolsson/WORKSONA/pixel-flow"   # worksona/pixel-flow
+DEFAULT_APP = REPO + "/v1/pixel-flow-studio-pro.html"
+DEFAULT_APP_NODES = REPO + "/v1/pixel-flow-nodes.html"  # legacy single-file Nodes
+LIVE_HOST = "https://pixel-flow.atomic47.co"      # deployed site — Nodes here is v2
+DEV_HOST = "http://localhost:5173"                # nodes-v2 vite dev server
 
 def read_input(arg):
     if not arg or arg == "-":
@@ -44,7 +53,8 @@ def main():
     p.add_argument("--base", help="override base URL (hosted deploy); replaces the file:// app path")
     p.add_argument("--code", action="store_true", help="print only the base64 code, not a URL")
     p.add_argument("--nodes", action="store_true", help="target the node-graph app (pixel-flow-nodes.html); config is a graph {nodes:[...]}")
-    p.add_argument("--live", action="store_true", help="produce a link to the deployed site (%s) instead of a local file://" % LIVE_HOST)
+    p.add_argument("--live", action="store_true", help="produce a link to the deployed site (%s) instead of a local file://; Nodes there is v2" % LIVE_HOST)
+    p.add_argument("--dev", action="store_true", help="target the local nodes-v2 vite dev server (%s) — v2 operators, no deploy needed" % DEV_HOST)
     p.add_argument("--kiosk", action="store_true", help="append &view=viewer so the app opens as a fullscreen output-only experience (a tiny ✎ chip returns to the editor)")
     p.add_argument("--cam", action="store_true", help="set src.cam so the app requests the webcam on open")
     p.add_argument("--mic", action="store_true", help="set src.mic so the app requests the mic (FFT) on open")
@@ -71,6 +81,9 @@ def main():
     cfg.setdefault("type", "pixel-flow-nodes-config" if is_graph else "pixel-flow-config")
     if a.nodes and a.app == DEFAULT_APP:
         a.app = DEFAULT_APP_NODES
+    if a.dev and not a.base:
+        # nodes-v2 dev server serves the graph app at the root
+        a.base = DEV_HOST + "/"
     if a.live and not a.base:
         # nodes → the deployed v2 app at /pixel-flow-nodes/ . Link it directly: the old
         # /pixel-flow-nodes.html now 302s there, and a redirect can drop the #cfg= fragment.
