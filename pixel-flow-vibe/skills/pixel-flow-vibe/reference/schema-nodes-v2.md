@@ -2,7 +2,7 @@
 
 **v2 is the deployed Nodes app.** `https://pixel-flow.atomic47.co/pixel-flow-nodes/` serves it, so
 `encode.py … --nodes --live` produces links with every operator below available. Source: the Vite
-project at `/Users/davidolsson/WORKSONA/pixel-flow/nodes-v2/` (`nvm use 20 && npm run dev` -> localhost:5173, or
+project at `apps/nodes/` in worksona/pixel-flow (`npm run dev` on Node 20 -> localhost:5173, or
 `encode.py … --nodes --dev`).
 
 v2 is a **superset of v1** — everything in the core catalog below still exists, and the `#cfg=` codec
@@ -13,7 +13,7 @@ A node declares `family` (`TOP`=image / `CHOP`=signal — how it cooks) and opti
 (`SOP`=geometry/3D — how it is coloured/catalogued). Author these exactly like any other node; only
 numeric params modulate.
 
-Target app: `/Users/davidolsson/WORKSONA/pixel-flow/v1/pixel-flow-nodes.html` — a TouchDesigner-style dataflow
+Target app: `legacy/nodes-v1/pixel-flow-nodes.html` in worksona/pixel-flow — a TouchDesigner-style dataflow
 editor. A config is the **graph itself**:
 
 ```json
@@ -149,7 +149,7 @@ All filters below take **1 image input** unless noted. Palette categories in par
 ## v2 nodes (Pixel Flow Nodes v2)
 
 **Availability:** these operators exist in **Pixel Flow Nodes v2** (the multi-file project at
-`/Users/davidolsson/WORKSONA/pixel-flow/nodes-v2/`, run via `npm run dev`), not in the
+`apps/nodes/` in worksona/pixel-flow, run via `npm run dev`), not in the
 legacy single-file `pixel-flow-nodes.html`. The `#cfg=` codec is unchanged, so the SAME
 `encode.py … --nodes` round-trip works — just target a host serving v2. A node declares
 `family` (`TOP`=image / `CHOP`=signal — how it cooks) and optional `group` (`SOP`=geometry/3D —

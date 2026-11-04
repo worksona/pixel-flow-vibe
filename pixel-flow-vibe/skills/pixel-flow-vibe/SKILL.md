@@ -1,25 +1,27 @@
 ---
 name: pixel-flow-vibe
-description: Vibe-code the Pixel Flow apps from natural language. Given a described look ("glitchy VHS grid pulsing to a kick", "a patch where my hand bends a particle field", "dreamy kaleidoscope morphing slowly"), author a Pixel Flow config — a Nodes v2 graph or a Studio zone/sequencer state — encode it into a shareable #cfg= URL the app auto-applies on load, and hand back a clickable link. Trigger on /pixel-flow-vibe, or when the user asks to generate / share / remix a Pixel Flow look, patch, graph, scene or preset, or to turn a mood/song/image into a Pixel Flow config.
+description: Vibe-code Pixel Flow Nodes, the node-graph app, from natural language. Given a described look ("a patch where my hand bends a particle field", "dreamy kaleidoscope morphing slowly", "glitchy datamosh pulsing to a kick"), author a Nodes v2 graph, encode it into a shareable #cfg= URL the app auto-applies on load, and hand back a clickable link. Trigger on /pixel-flow-vibe, or when the user asks to generate / share / remix a Pixel Flow Nodes patch, graph, scene or preset, or to turn a mood/song/image into a node graph. For Pixel Flow Studio looks (zones, effectors, sequencer, whole-screen recipes) use /pixel-flow-studio-vibe instead.
 ---
 
 # Pixel Flow Vibe
 
-Turn a natural-language description into a **Pixel Flow config**, encode it into a **share URL**, and
+Turn a natural-language description into a **Pixel Flow Nodes graph**, encode it into a **share URL**, and
 give the user a clickable link that opens the app with the look already running.
 
-Repos: app **worksona/pixel-flow** (`/Users/davidolsson/WORKSONA/pixel-flow`) · this skill
-**worksona/pixel-flow-vibe**. Live site: **https://pixel-flow.atomic47.co**.
+Source: `skills/pixel-flow-vibe/` in **worksona/pixel-flow** (the app repo; `$PIXEL_FLOW_REPO`, default
+`~/WORKSONA/pixel-flow`), published to the **worksona/pixel-flow-vibe** marketplace. Live site: **https://pixel-flow.atomic47.co**.
 
 ## Pick a target — Nodes v2 is the default
 
 | Target | When | Schema | Encode |
 |---|---|---|---|
 | **Nodes v2** *(default)* | Anything graph/patch/dataflow shaped, and anything needing 3D, particles, tracking, scenes, or the modular synth rack. This is the **deployed** Nodes app. | `reference/schema-nodes-v2.md` | `--nodes --live` (or `--nodes --dev`) |
-| **Studio** | Zone-based looks: marquee regions with stacked effectors, LFOs, a 64-step sequencer + synth, songs, scenes. **Prefer the dedicated `/pixel-flow-studio-vibe` skill** when it is installed: it has whole-screen recipes, layouts, presets-by-name, motion and a validator. Use this row only as a fallback. | `reference/schema-studio.md` | *(no flag)* |
-| **Nodes v1** *(legacy)* | Only when the user explicitly wants the old single-file `v1/pixel-flow-nodes.html`. | `reference/schema-nodes-v1.md` | `--nodes` (bare) |
+| **Nodes v1** *(legacy)* | Only when the user explicitly wants the old single-file `legacy/nodes-v1/pixel-flow-nodes.html`. | `reference/schema-nodes-v1.md` | `--nodes` (bare) |
 
-**Read the matching schema file FIRST, every run.** Never invent operator, effector, or param names —
+**Studio is not this skill's target.** For zone-based Studio looks (marquee regions, stacked effectors,
+the sequencer, whole-screen recipes) use **`/pixel-flow-studio-vibe`**, the other plugin in this marketplace.
+
+**Read the matching schema file FIRST, every run.** Never invent operator or param names —
 only use what the schema lists, and respect its `[min,max]` ranges.
 
 ### What v2 adds over v1
@@ -40,13 +42,13 @@ Bernoulli and Drum voices, with a lookahead scheduler for sample-accurate timing
 1. **Read the schema** for the chosen target (table above). Ground yourself in the current vocabulary.
 2. **Interpret the vibe** using the translation guides below.
 3. **Author the config JSON.** Keep it minimal — set only what matters; defaults fill the rest. Unique
-   ids. Studio canvas is 814×768; Nodes are ~200px wide, ~220px apart horizontally, rows ~280px apart.
+   ids. Nodes are ~200px wide, ~220px apart horizontally, rows ~280px apart.
 4. **Encode.** Write the JSON to a temp file and run:
    ```
    python3 ~/.claude/plugins/marketplaces/pixel-flow/pixel-flow-vibe/skills/pixel-flow-vibe/scripts/encode.py /tmp/pf-vibe.json --nodes --live
    ```
    Flags: `--nodes` targets the graph app · **`--live`** points at the deployed site (**Nodes there is
-   v2**) — use this for any link someone else will open · `--dev` targets the local nodes-v2 vite server
+   v2**) — use this for any link someone else will open · `--dev` targets the local Nodes v2 vite server (`apps/nodes`)
    at `localhost:5173` · `--base https://host/app.html` for any other host · `--code` emits just the
    paste-able code · `--kiosk` appends `&view=viewer` for a fullscreen output-only **experience** (a tiny
    ✎ chip returns to the editor) · `--cam` / `--mic` / `--image path.jpg` set the source. Prefer
@@ -80,30 +82,6 @@ with CHOPs hanging below driving params via `mods`.
 
 Only numeric params modulate. `mods` is `base + chopValue × depth` (chop ≈ −1..1; audio bands 0..1).
 
-## Vibe → effector translation
-
-Compose per zone; stacking a few reads better than one.
-
-- **glitchy / broken / datamosh** → `glitch` `vhs` `rgb` `slice`(sliceMode shift/wave) `sort` `pixel`; high `random`, `glitchAmt`; route `Snare→glitch` and put glitch hits on the Glitch lane.
-- **dreamy / ethereal / soft** → `kaleido` `bloom` `echo` `feedback` `flow`; low bpm, `hueSpeed` small, opacity <1, slow LFO on `kaleido`/`scale`.
-- **retro TV / VHS / analog** → `vhs` `scan` `colormtx`(cmat acid|cool) `dither`; grain up, vignette up.
-- **kaleidoscopic / mandala / symmetry** → `kaleido` or `wallpaper`(wallMode p4/pmm) + `affine` (Droste), motion `orbit`.
-- **liquid / melting / flowing** → `field` `ripple` `melt` `wave` `flow`; LFO on `fieldAmt`/`melt`.
-- **tiled / mosaic / grid** → `mosaic` with `cols`/`rows`, and pick a `tileFlow` (`lr` `rl` `ud` `du` `diag` `scroll` `radial` `swirl`) and `tileMode` (`brick` `diamond` `mirror` `rot4`). This is the headline tiling control — use it.
-- **neon / edges / vector** → `edges` `hue`(hueSpeed) `bloom` `echo`.
-- **psychedelic / vortex** → `twist` `tunnel` `kaleido` `czoom`, motion `spiral`.
-- **matrix / code / kernel** → `convolve`(emboss/edge, or custom kernel) `colormtx` `dither` `posterize`.
-
-Motion/energy:
-- Beat-reactive → set a punchy `seq` (Kick on 1/5/9/13), raise the relevant `ui.mod` amounts (Kick→offset, Bass→flow), add `strobe` for kick flashes.
-- Continuous motion → LFOs (`rate` 0.1–1, `depth` 0.3–0.6) and per-zone `motion` (`drift` `orbit` `dvd`).
-- Slow/meditative → bpm 70–96, gentle LFOs; Fast/aggressive → bpm 140–170, dense seq, `shake`.
-
-Layout:
-- One fullscreen zone (0,0,814,768) for a single unified look.
-- A 2×2 / 3×3 grid of zones (each ~407×384 / 271×256) with contrasting effectors for variety.
-- Horizontal bands (full width, stacked) for scan/slice looks; vertical bands for columns.
-
 ## Rules
 
 - Only use keys, param names and enum values from the schema you read. Respect `[min,max]`.
@@ -116,27 +94,22 @@ Layout:
 - If the user pastes an existing `#cfg=` URL or code, decode it first (`encode.py --decode`) and remix
   from their current look rather than starting over.
 
-## Example config (glitchy VHS grid pulsing to a kick)
+## Example graph (glitchy datamosh)
+
+Noise → glitch → pixel sort → RGB shift → output, with an LFO swelling the glitch amount. Encode with
+`--nodes --live`.
 
 ```json
 {
-  "ui": { "bpm": 140, "swing": 0.08, "mod": { "Kick":180, "Snare":70, "Bass":50 } },
-  "state": {
-    "bpm": 140,
-    "zones": [
-      { "id":"g", "name":"Grid", "shape":"rect", "x":0,"y":0,"w":814,"h":768,
-        "enabled": { "mosaic":true, "rgb":true, "vhs":true, "glitch":true, "scan":true },
-        "fx": { "cols":6, "rows":6, "tileMode":"brick", "tileFlow":"scroll",
-                "offset":90, "glitchAmt":34, "vhsAmt":16, "scan":7, "rgb":18 },
-        "lfos": [ { "on":true, "target":"offset", "wave":"noise", "rate":0.6, "depth":0.4 } ] }
-    ],
-    "seq": {
-      "Kick":  [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],
-      "Snare": [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
-      "Hat":   [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
-      "Glitch":[0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0]
-    },
-    "global": { "grain":0.14, "vignette":0.4, "strobe":0.25 }
-  }
+  "viewId": "out",
+  "nodes": [
+    { "id":"src", "type":"noise",    "x":20,  "y":60,  "params": { "hue":120, "speed":2 } },
+    { "id":"gl",  "type":"glitch",   "x":260, "y":50,  "params": { "amount":40, "blocks":12 }, "imgInputs":["src"],
+      "mods": [ { "src":"lfo", "param":"amount", "depth":30 } ] },
+    { "id":"so",  "type":"sort",     "x":500, "y":50,  "params": { "th":0.42 }, "imgInputs":["gl"] },
+    { "id":"rgb", "type":"rgbshift", "x":740, "y":50,  "params": { "amount":20, "angle":90 }, "imgInputs":["so"] },
+    { "id":"out", "type":"output",   "x":980, "y":60,  "imgInputs":["rgb"] },
+    { "id":"lfo", "type":"lfo",      "x":260, "y":340, "params": { "shape":"tri", "rate":0.4 } }
+  ]
 }
 ```

@@ -2,11 +2,11 @@
 
 > **This is the legacy single-file Nodes app.** For anything new, author against
 > `schema-nodes-v2.md` — v2 is the deployed app and a strict superset of this catalog.
-> Use this file only when the target is explicitly `v1/pixel-flow-nodes.html`.
+> Use this file only when the target is explicitly `legacy/nodes-v1/pixel-flow-nodes.html`.
 
-Target app: `/Users/davidolsson/WORKSONA/pixel-flow/v1/pixel-flow-nodes.html` — a TouchDesigner-style dataflow editor in one HTML file, no build step.
+Target app: `legacy/nodes-v1/pixel-flow-nodes.html` in worksona/pixel-flow — a TouchDesigner-style dataflow editor in one HTML file, no build step.
 
-Target app: `/Users/davidolsson/WORKSONA/pixel-flow/v1/pixel-flow-nodes.html` — a TouchDesigner-style dataflow
+Target app: `legacy/nodes-v1/pixel-flow-nodes.html` in worksona/pixel-flow — a TouchDesigner-style dataflow
 editor. A config is the **graph itself**:
 
 ```json

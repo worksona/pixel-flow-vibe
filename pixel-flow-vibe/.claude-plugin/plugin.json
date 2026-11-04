@@ -1,9 +1,19 @@
 {
   "name": "pixel-flow-vibe",
-  "description": "Vibe-code the Pixel Flow apps from natural language: author a config, encode it into a shareable #cfg= URL the app auto-loads. Targets Pixel Flow Nodes v2 (the deployed dataflow graph — 3D, particles, tracking, scenes, modular synth rack), Pixel Flow Studio (zones/sequencer), and legacy Nodes v1.",
-  "version": "1.1.0",
-  "author": {"name": "Worksona"},
+  "description": "Vibe-code Pixel Flow Nodes from natural language: author a node graph and encode it into a shareable #cfg= URL the app auto-loads. Targets Pixel Flow Nodes v2 (the deployed dataflow graph — 3D, particles, tracking, scenes, modular synth rack) and legacy Nodes v1. For Studio looks, install pixel-flow-studio-vibe.",
+  "version": "1.2.0",
+  "author": {
+    "name": "Worksona"
+  },
   "homepage": "https://pixel-flow.atomic47.co",
   "repository": "https://github.com/worksona/pixel-flow-vibe",
-  "keywords": ["visuals","vj","video-synth","generative","touchdesigner","modular-synth","shareable"]
+  "keywords": [
+    "visuals",
+    "vj",
+    "video-synth",
+    "generative",
+    "touchdesigner",
+    "modular-synth",
+    "shareable"
+  ]
 }

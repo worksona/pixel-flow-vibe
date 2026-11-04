@@ -7,7 +7,7 @@ description: Vibe-code Pixel Flow Studio, the zone-based visual instrument, from
 
 Turn a sentence into a **whole Studio screen** and a link that opens it running.
 
-App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
+App: `apps/studio/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 `https://pixel-flow.atomic47.co/pixel-flow-studio-pro.html`.
 
 ## How Studio thinks (read once)

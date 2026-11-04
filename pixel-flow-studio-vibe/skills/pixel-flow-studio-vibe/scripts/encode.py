@@ -37,7 +37,7 @@ import urllib.request, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
 VOCAB = json.load(open(os.path.join(HERE, "vocab.json"), encoding="utf-8"))
 REPO = os.environ.get("PIXEL_FLOW_REPO", os.path.expanduser("~/WORKSONA/pixel-flow"))
-LOCAL_APP = os.path.join(REPO, "v1", "pixel-flow-studio-pro.html")
+LOCAL_APP = os.path.join(REPO, "apps", "studio", "pixel-flow-studio-pro.html")
 LIVE = "https://pixel-flow.atomic47.co/pixel-flow-studio-pro.html"
 # the site's own a47l.com proxy: it holds the token and only shortens live Studio share links
 SHORTEN = "https://pixel-flow.atomic47.co/.netlify/functions/shorten"

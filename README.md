@@ -1,19 +1,23 @@
 # Pixel Flow — Claude Code plugin marketplace
 
-Two skills: describe a look and get a ready-to-open Pixel Flow link.
+Two skills, one per app: describe a look and get a ready-to-open Pixel Flow link.
 
-- **`/pixel-flow-vibe`** — Nodes v2 patches (and legacy targets).
+> **Generated, do not edit here.** This repo is built from `skills/` in the app repo
+> [worksona/pixel-flow](https://github.com/worksona/pixel-flow) by `scripts/sync-marketplace.mjs`.
+> Make skill changes there, next to the app they describe, then sync.
+
+- **`/pixel-flow-vibe`** — Pixel Flow Nodes: v2 node graphs (and the legacy v1 app).
 - **`/pixel-flow-studio-vibe`** — whole Studio screens: a layout of zones, a preset and motion
   per zone, a groove, mod matrix and post FX, validated against the Studio vocabulary. Also links
   any of the 20 stock recipes (`--recipe mandala`).
 
-Three targets, one codec:
+The two apps share one `#cfg=` link format:
 
-- **Pixel Flow Nodes v2** — the deployed node/dataflow video synth. 3D, particles, algorithmic
-  sources, hand/face/body tracking, scene & timeline, and a full modular synth rack. **Default.**
-- **Pixel Flow Studio** — the zone/sequencer effect studio: marquee regions, stacked effectors,
-  LFOs, a 64-step sequencer + synth. No v2 equivalent, so still current.
-- **Pixel Flow Nodes v1** — the legacy single-file graph app.
+- **Pixel Flow Nodes** (`/pixel-flow-vibe`) — the deployed node/dataflow video synth (v2). 3D,
+  particles, algorithmic sources, hand/face/body tracking, scene & timeline, and a full modular
+  synth rack. The legacy single-file v1 app is still a target.
+- **Pixel Flow Studio** (`/pixel-flow-studio-vibe`) — the zone/sequencer effect studio: marquee
+  regions, stacked effectors, LFOs, a 64-step sequencer + synth, themes and recipes.
 
 Live apps → **https://pixel-flow.atomic47.co** · App source → **[worksona/pixel-flow](https://github.com/worksona/pixel-flow)**
 
@@ -37,13 +41,15 @@ Then, in chat:
 /pixel-flow-studio-vibe  a 3x3 VHS wall that punches on the kick, kiosk link
 ```
 
-## Flags
+## Flags (`/pixel-flow-vibe`)
+
+The Studio encoder has its own flags; see its `SKILL.md`.
 
 | Flag | Effect |
 |---|---|
-| `--nodes` | target the node-graph app (config is a graph `{nodes:[...]}`) |
+| `--nodes` | accepted for compatibility; every config is a graph `{nodes:[...]}` |
 | `--live` | link on the deployed site — **Nodes there is v2**, so every operator resolves |
-| `--dev` | link at the local `nodes-v2` vite dev server (`localhost:5173`) |
+| `--dev` | link at the local `apps/nodes` vite dev server (`localhost:5173`) |
 | `--kiosk` | open fullscreen, output-only; a ✎ chip returns to the editor |
 | `--cam` `--mic` `--image f.jpg` | set the source the link opens with |
 | `--code` | print just the paste-able code for **Share ▾ → Load Config** |
@@ -61,8 +67,7 @@ pixel-flow-vibe/
     SKILL.md
     reference/schema-nodes-v2.md     # Nodes v2 catalog — rounds 1-13 (default target)
     reference/schema-nodes-v1.md     # Nodes v1 catalog (legacy)
-    reference/schema-studio.md       # Studio config catalog
-    scripts/encode.py                # config <-> #cfg= URL codec
+    scripts/encode.py                # Nodes graph <-> #cfg= URL codec
 pixel-flow-studio-vibe/
   .claude-plugin/plugin.json
   skills/pixel-flow-studio-vibe/
