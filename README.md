@@ -69,6 +69,7 @@ pixel-flow-studio-vibe/
     SKILL.md
     reference/schema.md              # Studio config: zones, effectors, params, motion, links
     reference/recipes.md             # recipes, presets, layouts, grooves
+    reference/themes.md              # themes, styles, patterns, film settings, titles
     scripts/encode.py                # expand layouts/presets, validate, encode (#cfg= / #cfgz= / #recipe=)
     scripts/vocab.json               # machine vocabulary the validator checks against
 ```
