@@ -65,13 +65,12 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 | `--cam` `--mic` `--image f.jpg` | source the link opens with (cam/mic arm on first tap) |
 | `--check` / `--expand` / `--code` / `--decode` | validate · print expanded JSON · base64 only · link → JSON |
 
-### Studio 2 vs the deployed build
+### Studio 2
 
-The rebuilt Studio ("Studio 2": inspector tabs, recipes, direct manipulation) adds `wander`,
-`swing`, `fig8` motions, `#recipe=` links, `#cfgz=` links and hidden zones. Until it is
-deployed, `--live` links should avoid those: the encoder warns when a config uses one. Plain
-`#cfg=` links with presets, layouts and the original seven motions work on every build, because
-the encoder expands presets and layouts itself.
+The live site runs Studio 2 (deployed 2026-11-04): inspector tabs, recipes, direct
+manipulation, the `wander` / `swing` / `fig8` motions, `#recipe=` and `#cfgz=` links, hidden
+zones. Everything in this skill works with `--live`. The encoder still notes when a config uses a
+Studio 2-only feature, because a downloaded copy of the older single-file Studio won't have it.
 
 ## Vibe → screen
 
