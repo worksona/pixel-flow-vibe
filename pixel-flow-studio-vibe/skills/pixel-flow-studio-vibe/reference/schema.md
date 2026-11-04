@@ -214,3 +214,6 @@ Keep `autopilotGain` low (0.3–0.6) so scenes stay recognisable. Share links ma
 - `#cfgz=<base64url deflate-raw JSON>` — Studio 2, about half the length.
 - `#recipe=<id>` — Studio 2, a stock recipe.
 - append `&view=viewer` for kiosk (fullscreen, no UI; a ✎ chip returns to the editor).
+- **Short links**: `https://a47l.com/<slug>` redirects to any of the above. The Studio's Share sheet makes
+  one by default and `encode.py --short` makes one from the command line, both through the site's own
+  proxy (`/.netlify/functions/shorten`), which only shortens live Studio links. `--decode` follows them.

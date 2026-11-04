@@ -27,7 +27,7 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
    effector, preset, param, enum value, layout or recipe id. Respect ranges.
 2. **Decide: stock recipe or authored look.**
    - The ask matches a stock recipe closely ("dreamy kaleidoscope", "DVD bouncing tiles") →
-     link the recipe: `encode.py --recipe mandala --live --kiosk`. Shortest link, nothing to get wrong.
+     link the recipe: `encode.py --recipe mandala --live --kiosk --short`. Shortest link, nothing to get wrong.
    - Otherwise author a config (step 3). Start from the nearest recipe's spirit.
 3. **Author the smallest config that says it.** Use the shorthands — they keep configs short
    and readable, and the encoder expands them:
@@ -41,11 +41,12 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 4. **Validate, then encode.** Write the JSON to a temp file:
    ```bash
    python3 "$CLAUDE_PLUGIN_ROOT/skills/pixel-flow-studio-vibe/scripts/encode.py" /tmp/look.json --check
-   python3 "$CLAUDE_PLUGIN_ROOT/skills/pixel-flow-studio-vibe/scripts/encode.py" /tmp/look.json --live --kiosk
+   python3 "$CLAUDE_PLUGIN_ROOT/skills/pixel-flow-studio-vibe/scripts/encode.py" /tmp/look.json --live --kiosk --compress --short
    ```
    Fix every `warn:` before handing over a link (an unknown name is silently dropped by the app).
    If `$CLAUDE_PLUGIN_ROOT` is unset, use the path of this skill folder.
-5. **Deliver**: the clickable link, one line on what's on screen, and 2–3 knobs to ask for next
+5. **Deliver**: the clickable link (the a47l.com short link from `--short`; if it warns that
+   shortening was unavailable, hand over the full link it printed instead), one line on what's on screen, and 2–3 knobs to ask for next
    ("faster", "more glitch on the snare", "make the orbs bigger"). Mention **⌘K** and **?** in
    the app, and that **C** copies a share link of whatever they tweak.
 6. **Iterate** by patching the previous JSON (keep it in the temp file) and re-encoding. Small
@@ -62,8 +63,9 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 | `--kiosk` | open fullscreen, output only — "send someone the finished piece" |
 | `--recipe ID` | link a stock recipe instead of a config |
 | `--compress` | `#cfgz=` deflate link, ~half the length (Studio 2 only) |
+| `--short` | also make an **a47l.com** short link through the site's shortener (needs `--live`; prints the full link and a warning if shortening is unavailable). Use it for every link someone else opens: short links fit any QR code and survive chat apps |
 | `--cam` `--mic` `--image f.jpg` | source the link opens with (cam/mic arm on first tap) |
-| `--check` / `--expand` / `--code` / `--decode` | validate · print expanded JSON · base64 only · link → JSON |
+| `--check` / `--expand` / `--code` / `--decode` | validate · print expanded JSON · base64 only · link → JSON (a47l.com links are followed first) |
 
 ### Studio 2
 
@@ -114,6 +116,24 @@ single frame (`reference/schema.md` → Scenes, Songs, Perform):
    `chainLoop`, and a light `autopilot`. Make the scene cycle and the chain different lengths.
 4. Hand back the `--kiosk` link as the piece and the plain link as "open in editor".
 
+**Ambient / calm / "show the sequencing"** — readable beats on smooth imagery
+(`reference/example-tide-clock.json`):
+- Use a **clean source**: the default demo texture is busy (red blocks and scribbles). Embed a soft
+  gradient with `--image` — `scripts/nightsea.py out.png` writes a 6 KB night-sea one, or bring any
+  calm photo. Grain ≤ 0.05, strobe 0, no autopilot.
+- On smooth imagery, **displacement is invisible** (shifting a gradient changes nothing). Lanes read
+  only through effects that change *brightness*. Give each lane one home:
+  | lane | effect that shows it | where |
+  |---|---|---|
+  | Kick | `bloom` (bloomAmt 1: glow 0.6→1.0 on each hit) | a small bright zone, e.g. an `invert`ed moon disc |
+  | Hat | `scan` (line alpha jumps on each hit) | a feathered band, scan 14–20, opacity 0.7–0.9 |
+  | Bass | `flow` at flow 2–4 (24 tiny dashes brighten) | a dark sky band — reads as stars twinkling |
+  | Morph | flips scene A↔B with a ~1 s ease | move/resize the hero zone between A and B |
+  Avoid `field`, `wave`, `ripple`, `echo` for this job: on gradients they do little, and `field` leaves
+  square seams.
+- Set `ui.mod` to 0 so nothing else reacts, and introduce one lane per song so the viewer learns the
+  mapping: bass alone → + kick → + hats → denser → back to one.
+
 **Beat-reactive**: set `seq` (or say which groove), raise `ui.mod` amounts, add `global.strobe`.
 **Mic-reactive**: add `--mic` and raise `ui.mod.Low` / `Mid` / `High`.
 **Camera as the source**: add `--cam`; effectors then remix the live camera.
@@ -127,9 +147,11 @@ single frame (`reference/schema.md` → Scenes, Songs, Perform):
 
 ## Examples
 
-Two full long-form pieces (4 scenes, 5 songs, chain, autopilot) live next to the schema:
-`reference/example-cathedral-of-hours.json` (meditative, 70–88 BPM) and
-`reference/example-signal-riot.json` (club, 120–156 BPM). Start from one when the ask is an
+Three full long-form pieces live next to the schema:
+`reference/example-cathedral-of-hours.json` (meditative, 4 scenes, 70–88 BPM),
+`reference/example-signal-riot.json` (club, 4 scenes, 120–156 BPM) and
+`reference/example-tide-clock.json` (ambient, one lane per element, Morph-lane tide; encode it
+with `--image reference/nightsea.png`). Start from one when the ask is an
 experience rather than a single look.
 
 **"slow dreamy orbs drifting over a liquid bed"**
