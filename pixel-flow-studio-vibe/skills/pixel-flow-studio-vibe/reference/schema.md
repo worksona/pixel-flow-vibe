@@ -9,9 +9,16 @@ A config is JSON:
   "state": { "bpm":128, "seed":17, "zones":[ ... ], "seq":{ ... }, "global":{ ... },
              "layout": { ... }   // encoder-only shorthand, see below
            },
-  "src":   { "cam": true, "mic": true, "image": "data:image/jpeg;base64,..." }   // optional
+  "src":   { "cam": true, "mic": true, "image": "data:image/jpeg;base64,..." },  // optional
+  "title": "Tide Clock", "by": "Worksona", "about": "One line on what to watch for."  // optional
 }
 ```
+
+**Landing page (kiosk links).** A link with `&view=viewer` opens on a title card: `title` (≤ 80
+chars, "Untitled look" if missing), `by` (≤ 60), `about` (≤ 160) and a Play button. If `src` asks
+for the camera or mic, the card offers "Play with camera" / "Play without", and nothing is
+requested before the viewer chooses. The tap starts sound and full screen and plays the piece from
+the top. Bottom-right controls then give Play/Stop, Full screen and Remix (open in the editor).
 
 `state` is merged over the running app state, so **partial is fine**. Every zone is filled out
 with defaults on load, so a zone needs only geometry, its effectors and the params you care about.

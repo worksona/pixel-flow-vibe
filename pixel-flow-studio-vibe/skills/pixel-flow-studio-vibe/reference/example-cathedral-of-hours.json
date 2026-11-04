@@ -1,80 +1,426 @@
 {
-  "ui": { "swing": 0.06, "mod": { "Kick": 70, "Bass": 55, "Low": 180, "Mid": 70, "Amp": 24 } },
+  "title": "Cathedral of Hours",
+  "about": "A stained-glass rose window breathing through four moods over a five-song set.",
+  "ui": {
+    "swing": 0.06,
+    "mod": {
+      "Kick": 70,
+      "Bass": 55,
+      "Low": 180,
+      "Mid": 70,
+      "Amp": 24
+    }
+  },
   "state": {
-    "layout": { "name": "wedges", "args": [12], "slots": [
-      { "preset": "neon", "fx": { "hue": 200, "hueSpeed": 0.7, "opacity": 0.85, "blend": "screen" },
-        "lfos": [ { "on": true, "target": "flow", "wave": "tri", "rate": 0.5, "depth": 0.4 },
-                  { "on": true, "target": "opacity", "wave": "sine", "rate": 0.031, "depth": 0.35 },
-                  { "on": true, "target": "hue", "wave": "saw", "rate": 0.017, "depth": 0.6 } ] },
-      { "preset": "prism", "fx": { "hue": 300, "opacity": 0.8, "blend": "lighter" },
-        "lfos": [ { "on": true, "target": "czoom", "wave": "sine", "rate": 0.3, "depth": 0.6 },
-                  { "on": true, "target": "opacity", "wave": "sine", "rate": 0.027, "depth": 0.35 },
-                  { "on": true, "target": "rippleAmt", "wave": "tri", "rate": 0.043, "depth": 0.5 } ] }
-    ]},
+    "layout": {
+      "name": "wedges",
+      "args": [
+        12
+      ],
+      "slots": [
+        {
+          "preset": "neon",
+          "fx": {
+            "hue": 200,
+            "hueSpeed": 0.7,
+            "opacity": 0.85,
+            "blend": "screen"
+          },
+          "lfos": [
+            {
+              "on": true,
+              "target": "flow",
+              "wave": "tri",
+              "rate": 0.5,
+              "depth": 0.4
+            },
+            {
+              "on": true,
+              "target": "opacity",
+              "wave": "sine",
+              "rate": 0.031,
+              "depth": 0.35
+            },
+            {
+              "on": true,
+              "target": "hue",
+              "wave": "saw",
+              "rate": 0.017,
+              "depth": 0.6
+            }
+          ]
+        },
+        {
+          "preset": "prism",
+          "fx": {
+            "hue": 300,
+            "opacity": 0.8,
+            "blend": "lighter"
+          },
+          "lfos": [
+            {
+              "on": true,
+              "target": "czoom",
+              "wave": "sine",
+              "rate": 0.3,
+              "depth": 0.6
+            },
+            {
+              "on": true,
+              "target": "opacity",
+              "wave": "sine",
+              "rate": 0.027,
+              "depth": 0.35
+            },
+            {
+              "on": true,
+              "target": "rippleAmt",
+              "wave": "tri",
+              "rate": 0.043,
+              "depth": 0.5
+            }
+          ]
+        }
+      ]
+    },
     "zones": [
-      { "name": "Rose Window", "preset": "dream", "shape": "ring", "x": 207, "y": 184, "w": 400, "h": 400,
-        "enabled": { "bloom": true },
-        "fx": { "innerR": 0.32, "kaleido": 10, "bloomAmt": 0.55, "feather": 14, "blend": "screen", "hue": 40, "hueSpeed": 0.4 },
-        "lfos": [ { "on": true, "target": "rotation", "wave": "tri", "rate": 0.05, "depth": 0.9 },
-                  { "on": true, "target": "kaleido", "wave": "sine", "rate": 0.07, "depth": 0.4 },
-                  { "on": true, "target": "innerR", "wave": "sine", "rate": 0.11, "depth": 0.25 } ] },
-      { "name": "Halo", "preset": "lumen", "shape": "ellipse", "x": 332, "y": 309, "w": 150, "h": 150, "motion": "fig8",
-        "fx": { "motionAmt": 46, "motionSpeed": 0.35, "feather": 22, "blend": "screen", "opacity": 0.9 } },
-      { "name": "Ember A", "preset": "ghost", "shape": "ellipse", "x": 80, "y": 90, "w": 120, "h": 120, "motion": "wander",
-        "fx": { "motionAmt": 70, "motionSpeed": 0.25, "feather": 26, "blend": "lighter", "opacity": 0.75 } },
-      { "name": "Ember B", "preset": "ghost", "shape": "ellipse", "x": 610, "y": 560, "w": 110, "h": 110, "motion": "wander",
-        "fx": { "motionAmt": 70, "motionSpeed": 0.22, "feather": 26, "blend": "lighter", "opacity": 0.75, "seed": 311 } }
+      {
+        "name": "Rose Window",
+        "preset": "dream",
+        "shape": "ring",
+        "x": 207,
+        "y": 184,
+        "w": 400,
+        "h": 400,
+        "enabled": {
+          "bloom": true
+        },
+        "fx": {
+          "innerR": 0.32,
+          "kaleido": 10,
+          "bloomAmt": 0.55,
+          "feather": 14,
+          "blend": "screen",
+          "hue": 40,
+          "hueSpeed": 0.4
+        },
+        "lfos": [
+          {
+            "on": true,
+            "target": "rotation",
+            "wave": "tri",
+            "rate": 0.05,
+            "depth": 0.9
+          },
+          {
+            "on": true,
+            "target": "kaleido",
+            "wave": "sine",
+            "rate": 0.07,
+            "depth": 0.4
+          },
+          {
+            "on": true,
+            "target": "innerR",
+            "wave": "sine",
+            "rate": 0.11,
+            "depth": 0.25
+          }
+        ]
+      },
+      {
+        "name": "Halo",
+        "preset": "lumen",
+        "shape": "ellipse",
+        "x": 332,
+        "y": 309,
+        "w": 150,
+        "h": 150,
+        "motion": "fig8",
+        "fx": {
+          "motionAmt": 46,
+          "motionSpeed": 0.35,
+          "feather": 22,
+          "blend": "screen",
+          "opacity": 0.9
+        }
+      },
+      {
+        "name": "Ember A",
+        "preset": "ghost",
+        "shape": "ellipse",
+        "x": 80,
+        "y": 90,
+        "w": 120,
+        "h": 120,
+        "motion": "wander",
+        "fx": {
+          "motionAmt": 70,
+          "motionSpeed": 0.25,
+          "feather": 26,
+          "blend": "lighter",
+          "opacity": 0.75
+        }
+      },
+      {
+        "name": "Ember B",
+        "preset": "ghost",
+        "shape": "ellipse",
+        "x": 610,
+        "y": 560,
+        "w": 110,
+        "h": 110,
+        "motion": "wander",
+        "fx": {
+          "motionAmt": 70,
+          "motionSpeed": 0.22,
+          "feather": 26,
+          "blend": "lighter",
+          "opacity": 0.75,
+          "seed": 311
+        }
+      }
     ],
     "songs": [
-      { "bpm": 76, "seq": { "Kick": "1000000000000000 0000000000000000 1000000000000000 0000000000000000",
-                            "Hat":  "0000000000001000 0000000000001000 0000000000001000 0000100000001000",
-                            "Visual": "1000000000000000 0000000000000000 0000000000000000 0000000000000000" } },
-      { "bpm": 82, "seq": { "Kick": "1000000010000000 1000000010000000 1000000010000000 1000000010100000",
-                            "Hat":  "0000100000001001 0000100000001000 0000100000001001 0010101000101011",
-                            "Bass": "1000000000100000 1000000000000000 1000000000100000 1000000010000000",
-                            "Visual": "1000000000000000 0000000000000000 1000000000000000 0000000000000000" } },
-      { "bpm": 88, "seq": { "Kick": "1000001010000000 1000001010000000 1000001010000000 1000001010001010",
-                            "Snare": "0000000010000000",
-                            "Hat":  "0010101000101010",
-                            "Bass": "1000001000100000",
-                            "Visual": "1000000010000000" } },
-      { "bpm": 82, "seq": { "Kick": "1000000000100000", "Snare": "0000000010000000", "Hat": "0000100000001000",
-                            "Bass": "1000000000000000 0000000000000000 1000000000000000 0000000000000000" } },
-      { "bpm": 70, "seq": { "Kick": "1000000000000000 0000000000000000 0000000000000000 0000000000000000",
-                            "Hat":  "0000000000000000 0000000000001000 0000000000000000 0000000000001000" } }
+      {
+        "bpm": 76,
+        "seq": {
+          "Kick": "1000000000000000 0000000000000000 1000000000000000 0000000000000000",
+          "Hat": "0000000000001000 0000000000001000 0000000000001000 0000100000001000",
+          "Visual": "1000000000000000 0000000000000000 0000000000000000 0000000000000000"
+        }
+      },
+      {
+        "bpm": 82,
+        "seq": {
+          "Kick": "1000000010000000 1000000010000000 1000000010000000 1000000010100000",
+          "Hat": "0000100000001001 0000100000001000 0000100000001001 0010101000101011",
+          "Bass": "1000000000100000 1000000000000000 1000000000100000 1000000010000000",
+          "Visual": "1000000000000000 0000000000000000 1000000000000000 0000000000000000"
+        }
+      },
+      {
+        "bpm": 88,
+        "seq": {
+          "Kick": "1000001010000000 1000001010000000 1000001010000000 1000001010001010",
+          "Snare": "0000000010000000",
+          "Hat": "0010101000101010",
+          "Bass": "1000001000100000",
+          "Visual": "1000000010000000"
+        }
+      },
+      {
+        "bpm": 82,
+        "seq": {
+          "Kick": "1000000000100000",
+          "Snare": "0000000010000000",
+          "Hat": "0000100000001000",
+          "Bass": "1000000000000000 0000000000000000 1000000000000000 0000000000000000"
+        }
+      },
+      {
+        "bpm": 70,
+        "seq": {
+          "Kick": "1000000000000000 0000000000000000 0000000000000000 0000000000000000",
+          "Hat": "0000000000000000 0000000000001000 0000000000000000 0000000000001000"
+        }
+      }
     ],
     "scenes": {
       "B": {
-        "Neon*":  { "fx": { "hue": 350, "scale": 0.7, "opacity": 0.6, "rotation": 0.35, "kaleido": 8 }, "enabled": { "edges": false, "kaleido": true } },
-        "Prism*": { "fx": { "hue": 90, "scale": 0.7, "opacity": 0.6, "rotation": -0.35, "bloomAmt": 0.6 }, "enabled": { "mirror": false, "bloom": true } },
-        "Rose Window": { "x": 57, "y": 34, "w": 700, "h": 700, "fx": { "innerR": 0.62, "kaleido": 16, "hue": 220, "bloomAmt": 0.9, "feather": 30 } },
-        "Halo": { "x": 282, "y": 259, "w": 250, "h": 250, "fx": { "motionAmt": 80 } },
-        "Ember A": { "x": 614, "y": 578 },
-        "Ember B": { "x": 80, "y": 80 }
+        "Neon*": {
+          "fx": {
+            "hue": 350,
+            "scale": 0.7,
+            "opacity": 0.6,
+            "rotation": 0.35,
+            "kaleido": 8
+          },
+          "enabled": {
+            "edges": false,
+            "kaleido": true
+          }
+        },
+        "Prism*": {
+          "fx": {
+            "hue": 90,
+            "scale": 0.7,
+            "opacity": 0.6,
+            "rotation": -0.35,
+            "bloomAmt": 0.6
+          },
+          "enabled": {
+            "mirror": false,
+            "bloom": true
+          }
+        },
+        "Rose Window": {
+          "x": 57,
+          "y": 34,
+          "w": 700,
+          "h": 700,
+          "fx": {
+            "innerR": 0.62,
+            "kaleido": 16,
+            "hue": 220,
+            "bloomAmt": 0.9,
+            "feather": 30
+          }
+        },
+        "Halo": {
+          "x": 282,
+          "y": 259,
+          "w": 250,
+          "h": 250,
+          "fx": {
+            "motionAmt": 80
+          }
+        },
+        "Ember A": {
+          "x": 614,
+          "y": 578
+        },
+        "Ember B": {
+          "x": 80,
+          "y": 80
+        }
       },
       "C": {
-        "Neon*":  { "fx": { "hue": 240, "scale": 0.9, "opacity": 0.35, "rotation": 0 } },
-        "Prism*": { "fx": { "hue": 260, "scale": 0.9, "opacity": 0.3, "rotation": 0 } },
-        "Rose Window": { "x": 307, "y": 284, "w": 200, "h": 200, "fx": { "innerR": 0.2, "kaleido": 6, "hue": 260, "bloomAmt": 0.3 } },
-        "Halo": { "x": 207, "y": 184, "w": 400, "h": 400, "fx": { "feather": 40, "opacity": 0.7, "motionAmt": 20 } },
-        "Ember*": { "x": 347, "y": 334, "fx": { "opacity": 0.9 } }
+        "Neon*": {
+          "fx": {
+            "hue": 240,
+            "scale": 0.9,
+            "opacity": 0.35,
+            "rotation": 0
+          }
+        },
+        "Prism*": {
+          "fx": {
+            "hue": 260,
+            "scale": 0.9,
+            "opacity": 0.3,
+            "rotation": 0
+          }
+        },
+        "Rose Window": {
+          "x": 307,
+          "y": 284,
+          "w": 200,
+          "h": 200,
+          "fx": {
+            "innerR": 0.2,
+            "kaleido": 6,
+            "hue": 260,
+            "bloomAmt": 0.3
+          }
+        },
+        "Halo": {
+          "x": 207,
+          "y": 184,
+          "w": 400,
+          "h": 400,
+          "fx": {
+            "feather": 40,
+            "opacity": 0.7,
+            "motionAmt": 20
+          }
+        },
+        "Ember*": {
+          "x": 347,
+          "y": 334,
+          "fx": {
+            "opacity": 0.9
+          }
+        }
       },
       "D": {
-        "Neon*":  { "fx": { "hue": 30, "scale": 1, "opacity": 0.9, "rotation": 0 }, "enabled": { "bloom": true } },
-        "Prism*": { "fx": { "hue": 50, "scale": 1, "opacity": 0.85, "rotation": 0 } },
-        "Rose Window": { "x": 107, "y": 84, "w": 600, "h": 600, "fx": { "innerR": 0.45, "kaleido": 12, "hue": 10, "bloomAmt": 0.7 } },
-        "Halo": { "x": 357, "y": 334, "w": 100, "h": 100 },
-        "Ember A": { "x": 640, "y": 80 },
-        "Ember B": { "x": 80, "y": 600 }
+        "Neon*": {
+          "fx": {
+            "hue": 30,
+            "scale": 1,
+            "opacity": 0.9,
+            "rotation": 0
+          },
+          "enabled": {
+            "bloom": true
+          }
+        },
+        "Prism*": {
+          "fx": {
+            "hue": 50,
+            "scale": 1,
+            "opacity": 0.85,
+            "rotation": 0
+          }
+        },
+        "Rose Window": {
+          "x": 107,
+          "y": 84,
+          "w": 600,
+          "h": 600,
+          "fx": {
+            "innerR": 0.45,
+            "kaleido": 12,
+            "hue": 10,
+            "bloomAmt": 0.7
+          }
+        },
+        "Halo": {
+          "x": 357,
+          "y": 334,
+          "w": 100,
+          "h": 100
+        },
+        "Ember A": {
+          "x": 640,
+          "y": 80
+        },
+        "Ember B": {
+          "x": 80,
+          "y": 600
+        }
       }
     },
-    "global": { "grain": 0.07, "vignette": 0.6, "feedback": 0.18, "dim": 0.12, "strobe": 0 }
+    "global": {
+      "grain": 0.07,
+      "vignette": 0.6,
+      "feedback": 0.18,
+      "dim": 0.12,
+      "strobe": 0
+    }
   },
   "perform": {
-    "cycle": true, "holdBars": 6, "blendBars": 3,
-    "chain": [ { "song": 1, "loops": 1 }, { "song": 2, "loops": 2 }, { "song": 3, "loops": 2 },
-               { "song": 4, "loops": 1 }, { "song": 2, "loops": 1 }, { "song": 5, "loops": 1 } ],
+    "cycle": true,
+    "holdBars": 6,
+    "blendBars": 3,
+    "chain": [
+      {
+        "song": 1,
+        "loops": 1
+      },
+      {
+        "song": 2,
+        "loops": 2
+      },
+      {
+        "song": 3,
+        "loops": 2
+      },
+      {
+        "song": 4,
+        "loops": 1
+      },
+      {
+        "song": 2,
+        "loops": 1
+      },
+      {
+        "song": 5,
+        "loops": 1
+      }
+    ],
     "chainLoop": true,
-    "autopilot": "drift", "autopilotGain": 0.4
+    "autopilot": "drift",
+    "autopilotGain": 0.4
   }
 }
