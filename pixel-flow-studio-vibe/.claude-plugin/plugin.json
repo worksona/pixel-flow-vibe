@@ -1,9 +1,19 @@
 {
   "name": "pixel-flow-studio-vibe",
   "description": "Vibe Pixel Flow Studio from words: compose a whole screen (layout of zones, a preset and motion per zone, groove, mod matrix, post FX), validate it against the Studio vocabulary, and get a share link that opens it running, optionally fullscreen kiosk.",
-  "version": "1.0.0",
-  "author": {"name": "Worksona"},
+  "version": "1.1.0",
+  "author": {
+    "name": "Worksona"
+  },
   "homepage": "https://pixel-flow.atomic47.co/pixel-flow-studio-pro.html",
   "repository": "https://github.com/worksona/pixel-flow-vibe",
-  "keywords": ["visuals", "vj", "zones", "effectors", "recipes", "beat-reactive", "shareable"]
+  "keywords": [
+    "visuals",
+    "vj",
+    "zones",
+    "effectors",
+    "recipes",
+    "beat-reactive",
+    "shareable"
+  ]
 }

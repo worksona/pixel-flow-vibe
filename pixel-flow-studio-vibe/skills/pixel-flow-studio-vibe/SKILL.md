@@ -67,10 +67,10 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 
 ### Studio 2
 
-The live site runs Studio 2 (deployed 2026-11-04): inspector tabs, recipes, direct
-manipulation, the `wander` / `swing` / `fig8` motions, `#recipe=` and `#cfgz=` links, hidden
-zones. Everything in this skill works with `--live`. The encoder still notes when a config uses a
-Studio 2-only feature, because a downloaded copy of the older single-file Studio won't have it.
+The live site runs Studio 2: inspector tabs, recipes, direct manipulation, the `wander` /
+`swing` / `fig8` motions, `#recipe=` and `#cfgz=` links, hidden zones, and `perform` (scene
+cycling, song chains and autopilot that start when a link opens). Everything in this skill works
+with `--live`. A downloaded copy of the older single-file Studio ignores these features.
 
 ## Vibe → screen
 
@@ -104,6 +104,16 @@ from its energy, the **groove + BPM** from its tempo.
 - aggressive / punchy → `shake` (motionAmt 8–16), BPM 140–170, grooves "Techno" / "Breakbeat",
   `global.strobe` 0.2–0.45, mod `Kick` 180–260, `Snare` 60–110
 
+**Long-form / "an experience" / "a set" / "something that evolves"** — build sections, not a
+single frame (`reference/schema.md` → Scenes, Songs, Perform):
+1. Author the zones once (scene A), then 2–3 more scenes as overrides: move and resize the hero
+   zones, swap presets on groups (`"Glitch*": {"preset": "vhs"}`), shift hues, drop opacity for a
+   breakdown, blow a zone up for a peak.
+2. Write 3–5 songs (intro, main, breakdown, build, drop) with different BPMs and densities.
+3. `perform`: `cycle` with `holdBars` 3–8 and `blendBars` 1–4, a `chain` through the songs with
+   `chainLoop`, and a light `autopilot`. Make the scene cycle and the chain different lengths.
+4. Hand back the `--kiosk` link as the piece and the plain link as "open in editor".
+
 **Beat-reactive**: set `seq` (or say which groove), raise `ui.mod` amounts, add `global.strobe`.
 **Mic-reactive**: add `--mic` and raise `ui.mod.Low` / `Mid` / `High`.
 **Camera as the source**: add `--cam`; effectors then remix the live camera.
@@ -116,6 +126,11 @@ from its energy, the **groove + BPM** from its tempo.
 - Hand back links, not JSON, unless asked. Open the link in a browser only if asked.
 
 ## Examples
+
+Two full long-form pieces (4 scenes, 5 songs, chain, autopilot) live next to the schema:
+`reference/example-cathedral-of-hours.json` (meditative, 70–88 BPM) and
+`reference/example-signal-riot.json` (club, 120–156 BPM). Start from one when the ask is an
+experience rather than a single look.
 
 **"slow dreamy orbs drifting over a liquid bed"**
 ```json

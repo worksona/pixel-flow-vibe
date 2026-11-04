@@ -152,11 +152,121 @@ def expand(cfg):
             if "shape" in s: g["shape"] = s.pop("shape")
             g.update(s); zones.append(g)
     zones += explicit
+    no_scene = set()
+    for i, z in enumerate(zones):
+        if z.pop("scenes", True) is False: no_scene.add(i)
     st["zones"] = [expand_zone(z, i) for i, z in enumerate(zones)]
+    if "groove" in st:
+        g = st.pop("groove")
+        if g not in VOCAB["grooves"]: warn("unknown groove %r (have: %s)" % (g, " ".join(VOCAB["grooves"])))
+        else: st["seq"] = dict(VOCAB["grooves"][g], **(st.get("seq") or {}))
+    if "seq" in st: st["seq"] = lanes(st["seq"])
+    expand_songs(cfg)
+    expand_scenes(st, {st["zones"][i]["id"] for i in no_scene})
     if "bpm" in st:
         cfg.setdefault("ui", {})["bpm"] = st["bpm"]
     cfg.setdefault("v", 1); cfg.setdefault("type", "pixel-flow-config")
     return cfg
+
+LANES = ("Kick", "Snare", "Hat", "Bass", "Glitch", "Morph", "Visual")
+
+def lanes(seq):
+    """lanes may be 0/1 lists or '1000100010001000' strings (16, 32 or 64 long)"""
+    out = {}
+    for k, v in (seq or {}).items():
+        if isinstance(v, str): v = [int(c) for c in v.replace(" ", "").replace("|", "")]
+        out[k] = v
+    return out
+
+def expand_songs(cfg):
+    """state.songs: 1-5 of {bpm, swing, seq | groove}; padded to the 5 slots the app keeps.
+    The live groove and tempo start from song 1 (or songIdx)."""
+    st = cfg["state"]; songs = st.get("songs")
+    if not songs: return
+    if len(songs) > 5: warn("songs: %d given, the app keeps 5" % len(songs)); songs = songs[:5]
+    out = []
+    for i, s in enumerate(songs):
+        s = dict(s); seq = {}
+        if "groove" in s:
+            g = s.pop("groove")
+            if g not in VOCAB["grooves"]: warn("song %d: unknown groove %r" % (i+1, g))
+            else: seq.update(VOCAB["grooves"][g])
+        seq.update(s.get("seq") or {})
+        out.append({"bpm": s.get("bpm", st.get("bpm", 120)), "swing": s.get("swing", (cfg.get("ui") or {}).get("swing", 0)), "seq": lanes(seq)})
+    while len(out) < 5: out.append(json.loads(json.dumps(out[-1])))
+    st["songs"] = out
+    idx = max(0, min(4, int(st.get("songIdx", 0)))); st["songIdx"] = idx
+    st["seq"] = json.loads(json.dumps(out[idx]["seq"])); st["bpm"] = out[idx]["bpm"]
+    cfg.setdefault("ui", {})["swing"] = out[idx]["swing"]
+
+def _snapshot(z):
+    en = {k: False for k in VOCAB["fx"]}; en.update({k: bool(v) for k, v in (z.get("enabled") or {}).items()})
+    fx = dict(VOCAB["defaults"]); fx.update(z.get("fx") or {}); fx.pop("kernel", None)
+    return {"id": z["id"], "x": z["x"], "y": z["y"], "w": z["w"], "h": z["h"], "fx": fx, "enabled": en}
+
+def _selects(sel, z):
+    return sel == "*" or sel == z["name"] or sel == z["id"] or (sel.endswith("*") and z["name"].startswith(sel[:-1]))
+
+def expand_scenes(st, no_scene_ids):
+    """state.scenes: {"B": {selector: override, ...}, "C": {...}, "D": {...}} -> full snapshots.
+    Scene A is the zones as authored (or an override dict applied to them). Selectors: "*",
+    an exact zone name or id, or a name prefix ending in "*" ("Neon*"). Later selectors win.
+    An override may set x y w h, fx {}, enabled {}, preset (swaps the whole stack), motion.
+    Zones with "scenes": false stay out of every scene (they keep their own motion, e.g. dvd)."""
+    spec = st.get("scenes")
+    if not spec or all(isinstance(v, list) or v is None for v in spec.values()): return
+    zones = [z for z in st["zones"] if z["id"] not in no_scene_ids]
+    out = {"A": None, "B": None, "C": None, "D": None}
+    for key in ("A", "B", "C", "D"):
+        ov = spec.get(key)
+        if key != "A" and ov is None: continue
+        snaps = []
+        for z in zones:
+            s = _snapshot(z)
+            for sel, o in (ov or {}).items():
+                if not any(_selects(sel, zz) for zz in zones): warn("scene %s: selector %r matches no zone" % (key, sel))
+                if not _selects(sel, z): continue
+                o = dict(o)
+                if "preset" in o:
+                    P = VOCAB["presets"].get(o.pop("preset"))
+                    if not P: warn("scene %s: unknown preset" % key)
+                    else:
+                        s["enabled"] = {k: False for k in VOCAB["fx"]}; s["enabled"].update({k: True for k in P["e"]})
+                        s["fx"].update(P["f"])
+                if "motion" in o: s["fx"]["motion"] = o.pop("motion")
+                s["fx"].update(o.pop("fx", {}) or {}); s["enabled"].update(o.pop("enabled", {}) or {})
+                for k in ("x", "y", "w", "h"):
+                    if k in o: s[k] = float(o.pop(k))
+                for k in o: warn("scene %s: unknown override key %r" % (key, k))
+            s["x"] = max(0.0, min(W - 20, s["x"])); s["y"] = max(0.0, min(H - 20, s["y"]))
+            s["w"] = max(20.0, min(W - s["x"], s["w"])); s["h"] = max(20.0, min(H - s["y"], s["h"]))
+            snaps.append(s)
+        out[key] = snaps
+    st["scenes"] = out
+
+def validate_perform(cfg):
+    p = cfg.get("perform")
+    if p is None: return
+    if not isinstance(p, dict): warn("perform must be an object"); return
+    known = {"cycle", "holdBars", "blendBars", "morph", "chain", "chainLoop", "autopilot", "autopilotGain", "play"}
+    for k in p:
+        if k not in known: warn("perform: unknown key %r (have: %s)" % (k, " ".join(sorted(known))))
+    sc = cfg["state"].get("scenes") or {}
+    n_scenes = sum(1 for v in sc.values() if v)
+    if p.get("cycle") and n_scenes < 2: warn("perform.cycle needs at least 2 scenes (have %d)" % n_scenes)
+    if p.get("morph") not in (None, "auto"): warn("perform.morph must be \"auto\"")
+    if p.get("morph") == "auto" and not (sc.get("A") and sc.get("B")): warn("perform.morph needs scenes A and B")
+    hb, bb = p.get("holdBars", 1), p.get("blendBars", 1)
+    if not (isinstance(hb, int) and 1 <= hb <= 32): warn("perform.holdBars must be 1..32")
+    if not (isinstance(bb, int) and 1 <= bb <= 8): warn("perform.blendBars must be 1..8")
+    elif isinstance(hb, int) and bb > hb: warn("perform.blendBars (%d) > holdBars (%d); the app clamps it" % (bb, hb))
+    if "chain" in p:
+        if not cfg["state"].get("songs"): warn("perform.chain needs state.songs")
+        for c in p["chain"]:
+            if not (1 <= int(c.get("song", 0)) <= 5): warn("perform.chain: song must be 1..5")
+            if not (1 <= int(c.get("loops", 1)) <= 16): warn("perform.chain: loops must be 1..16")
+    if "autopilot" in p and p["autopilot"] not in VOCAB["autopilots"]: warn("perform.autopilot must be one of %s" % VOCAB["autopilots"])
+    if "autopilotGain" in p and not (0.2 <= float(p["autopilotGain"]) <= 2.5): warn("perform.autopilotGain must be 0.2..2.5")
 
 def validate(cfg):
     fxkeys, ranges, enums = set(VOCAB["fx"]), VOCAB["ranges"], VOCAB["enums"]
@@ -180,13 +290,14 @@ def validate(cfg):
         for l in z.get("lfos") or []:
             if l.get("target") not in VOCAB["lfoTargets"]: warn("zone %s: LFO target %r unknown" % (zid, l.get("target")))
             if l.get("wave") not in ("sine", "tri", "square", "saw", "noise"): warn("zone %s: LFO wave %r unknown" % (zid, l.get("wave")))
-        if (z.get("fx") or {}).get("motion") in VOCAB["newInStudio2"]["motions"]:
-            pass  # Studio 2 motion; live since 2026-11-04 — see SKILL.md
-    lanes = {"Kick", "Snare", "Hat", "Bass", "Glitch", "Morph", "Visual"}
-    for l, a in (cfg["state"].get("seq") or {}).items():
-        if l not in lanes: warn("seq: unknown lane %r" % l)
-        elif any(v not in (0, 1) for v in a): warn("seq %s: steps must be 0/1" % l)
+    seqs = [("seq", cfg["state"].get("seq") or {})] + [("song %d" % (i+1), s["seq"]) for i, s in enumerate(cfg["state"].get("songs") or [])]
+    for where, seq in seqs:
+        for l, a in seq.items():
+            if l not in LANES: warn("%s: unknown lane %r" % (where, l))
+            elif any(v not in (0, 1) for v in a): warn("%s %s: steps must be 0/1" % (where, l))
+            elif len(a) not in (16, 32, 64): warn("%s %s: %d steps (use 16, 32 or 64)" % (where, l, len(a)))
     if len(cfg["state"]["zones"]) > 24: warn("%d zones — over ~24 the frame rate drops" % len(cfg["state"]["zones"]))
+    validate_perform(cfg)
 
 # ---------------------------------------------------------------- codec
 def b64(s): return base64.b64encode(s.encode("utf-8")).decode("ascii")
