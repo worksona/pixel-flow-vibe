@@ -1,7 +1,11 @@
 # Pixel Flow — Claude Code plugin marketplace
 
-The **`/pixel-flow-vibe`** skill: describe a look and get a ready-to-open Pixel Flow config as a
-shareable `#cfg=` link.
+Two skills: describe a look and get a ready-to-open Pixel Flow link.
+
+- **`/pixel-flow-vibe`** — Nodes v2 patches (and legacy targets).
+- **`/pixel-flow-studio-vibe`** — whole Studio screens: a layout of zones, a preset and motion
+  per zone, a groove, mod matrix and post FX, validated against the Studio vocabulary. Also links
+  any of the 20 stock recipes (`--recipe mandala`).
 
 Three targets, one codec:
 
@@ -18,6 +22,7 @@ Live apps → **https://pixel-flow.atomic47.co** · App source → **[worksona/p
 ```
 /plugin marketplace add worksona/pixel-flow-vibe
 /plugin install pixel-flow-vibe@pixel-flow
+/plugin install pixel-flow-studio-vibe@pixel-flow
 ```
 
 > Previously published as `Atomic-47-Labs/pixel-flow`. That path still redirects, but update it —
@@ -28,6 +33,8 @@ Then, in chat:
 ```
 /pixel-flow-vibe  dreamy kaleidoscope that morphs on the downbeat
 /pixel-flow-vibe  a patch where my hand bends a particle field
+/pixel-flow-studio-vibe  slow dreamy orbs drifting over a liquid bed
+/pixel-flow-studio-vibe  a 3x3 VHS wall that punches on the kick, kiosk link
 ```
 
 ## Flags
@@ -56,6 +63,14 @@ pixel-flow-vibe/
     reference/schema-nodes-v1.md     # Nodes v1 catalog (legacy)
     reference/schema-studio.md       # Studio config catalog
     scripts/encode.py                # config <-> #cfg= URL codec
+pixel-flow-studio-vibe/
+  .claude-plugin/plugin.json
+  skills/pixel-flow-studio-vibe/
+    SKILL.md
+    reference/schema.md              # Studio config: zones, effectors, params, motion, links
+    reference/recipes.md             # recipes, presets, layouts, grooves
+    scripts/encode.py                # expand layouts/presets, validate, encode (#cfg= / #cfgz= / #recipe=)
+    scripts/vocab.json               # machine vocabulary the validator checks against
 ```
 
 MIT-style: use it, remix it, share the links.

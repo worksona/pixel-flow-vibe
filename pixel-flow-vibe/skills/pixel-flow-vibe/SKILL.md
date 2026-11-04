@@ -16,7 +16,7 @@ Repos: app **worksona/pixel-flow** (`/Users/davidolsson/WORKSONA/pixel-flow`) ·
 | Target | When | Schema | Encode |
 |---|---|---|---|
 | **Nodes v2** *(default)* | Anything graph/patch/dataflow shaped, and anything needing 3D, particles, tracking, scenes, or the modular synth rack. This is the **deployed** Nodes app. | `reference/schema-nodes-v2.md` | `--nodes --live` (or `--nodes --dev`) |
-| **Studio** | Zone-based looks: marquee regions with stacked effectors, LFOs, a 64-step sequencer + synth, songs, scenes. Reach for it when the ask is "a look / a song / a beat-reactive scene" rather than a signal chain. v2 has **no Studio equivalent**, so Studio is still current. | `reference/schema-studio.md` | *(no flag)* |
+| **Studio** | Zone-based looks: marquee regions with stacked effectors, LFOs, a 64-step sequencer + synth, songs, scenes. **Prefer the dedicated `/pixel-flow-studio-vibe` skill** when it is installed: it has whole-screen recipes, layouts, presets-by-name, motion and a validator. Use this row only as a fallback. | `reference/schema-studio.md` | *(no flag)* |
 | **Nodes v1** *(legacy)* | Only when the user explicitly wants the old single-file `v1/pixel-flow-nodes.html`. | `reference/schema-nodes-v1.md` | `--nodes` (bare) |
 
 **Read the matching schema file FIRST, every run.** Never invent operator, effector, or param names —
