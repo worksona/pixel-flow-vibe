@@ -181,7 +181,7 @@ def validate(cfg):
             if l.get("target") not in VOCAB["lfoTargets"]: warn("zone %s: LFO target %r unknown" % (zid, l.get("target")))
             if l.get("wave") not in ("sine", "tri", "square", "saw", "noise"): warn("zone %s: LFO wave %r unknown" % (zid, l.get("wave")))
         if (z.get("fx") or {}).get("motion") in VOCAB["newInStudio2"]["motions"]:
-            warn("zone %s: motion %r needs Studio 2 (older builds treat it as none)" % (zid, z["fx"]["motion"]))
+            pass  # Studio 2 motion; live since 2026-11-04 — see SKILL.md
     lanes = {"Kick", "Snare", "Hat", "Bass", "Glitch", "Morph", "Visual"}
     for l, a in (cfg["state"].get("seq") or {}).items():
         if l not in lanes: warn("seq: unknown lane %r" % l)
