@@ -19,16 +19,20 @@ Usage
   encode.py look.json --check                  # validate only, print warnings
   encode.py look.json --expand                 # print the expanded JSON
   encode.py look.json --code                   # base64 code for Share ▸ Load a look
-  encode.py --decode '<url or code>'           # #cfg= or #cfgz= back to JSON
+  encode.py --decode '<url or code>'           # #cfg= or #cfgz= back to JSON (an a47l.com link is followed first)
+  encode.py look.json --live --kiosk --short   # also make an a47l.com short link (falls back to the full one)
 Flags: --cam --mic --image f.jpg (source) · --compress (#cfgz=, Studio 2+ only)
 """
 import sys, os, json, base64, zlib, argparse, re, random, math
+import urllib.request, urllib.error
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 VOCAB = json.load(open(os.path.join(HERE, "vocab.json"), encoding="utf-8"))
 REPO = os.environ.get("PIXEL_FLOW_REPO", os.path.expanduser("~/WORKSONA/pixel-flow"))
 LOCAL_APP = os.path.join(REPO, "v1", "pixel-flow-studio-pro.html")
 LIVE = "https://pixel-flow.atomic47.co/pixel-flow-studio-pro.html"
+# the site's own a47l.com proxy: it holds the token and only shortens live Studio share links
+SHORTEN = "https://pixel-flow.atomic47.co/.netlify/functions/shorten"
 W, H = 814, 768
 
 # ---------------------------------------------------------------- layouts
@@ -192,6 +196,7 @@ def expand_songs(cfg):
             if g not in VOCAB["grooves"]: warn("song %d: unknown groove %r" % (i+1, g))
             else: seq.update(VOCAB["grooves"][g])
         seq.update(s.get("seq") or {})
+        seq = dict({l: "0" * 16 for l in LANES}, **seq)  # every song keeps all 7 lanes, so lane rows don't come and go
         out.append({"bpm": s.get("bpm", st.get("bpm", 120)), "swing": s.get("swing", (cfg.get("ui") or {}).get("swing", 0)), "seq": lanes(seq)})
     while len(out) < 5: out.append(json.loads(json.dumps(out[-1])))
     st["songs"] = out
@@ -306,6 +311,9 @@ def deflate(s):
     c = zlib.compressobj(9, zlib.DEFLATED, -15); return b64url(c.compress(s.encode("utf-8")) + c.flush())
 
 def decode(text):
+    r = re.search(r"[#&]recipe=([A-Za-z0-9_-]+)", text)
+    if r and "cfg" not in text:
+        return {"recipe": r.group(1), "kiosk": "view=viewer" in text, "note": "a stock recipe link; see reference/recipes.md"}
     m = re.search(r"cfgz=([^&\s]+)", text)
     if m:
         code = m.group(1); code += "=" * (-len(code) % 4)
@@ -314,6 +322,35 @@ def decode(text):
     code = (m.group(1) if m else text.strip()).replace("%2B", "+").replace("%2F", "/").replace("%3D", "=").replace("-", "+").replace("_", "/")
     code += "=" * (-len(code) % 4)
     return json.loads(base64.b64decode(code).decode("utf-8"))
+
+def shorten(url, notes="pixel-flow studio vibe", timeout=15):
+    """POST a live Studio link to the site's shortener; returns the a47l.com URL or raises."""
+    if not url.startswith(LIVE):
+        raise ValueError("only --live links can be shortened (the proxy accepts the live Studio only)")
+    req = urllib.request.Request(SHORTEN, data=json.dumps({"url": url, "notes": notes}).encode("utf-8"),
+                                 headers={"content-type": "application/json", "user-agent": "pixel-flow-studio-vibe"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            j = json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        try: msg = json.loads(e.read().decode("utf-8")).get("error")
+        except Exception: msg = None
+        raise RuntimeError("%s (HTTP %d)" % (msg or "shortener refused", e.code))
+    if not j.get("short"): raise RuntimeError("no short link in reply")
+    return j["short"]
+
+def follow(text):
+    """an a47l.com (or any short) link -> the long URL it redirects to"""
+    m = re.match(r"\s*(https?://a47l\.com/\S+)", text)
+    if not m: return text
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *a, **k): return None
+    try:
+        urllib.request.build_opener(NoRedirect).open(urllib.request.Request(m.group(1), method="HEAD"), timeout=15)
+    except urllib.error.HTTPError as e:
+        loc = e.headers.get("location")
+        if loc: return loc
+    raise RuntimeError("could not resolve %s" % m.group(1))
 
 def read_input(arg):
     if not arg or arg == "-": return sys.stdin.read()
@@ -334,14 +371,16 @@ def main():
     ap.add_argument("--check", action="store_true", help="validate only")
     ap.add_argument("--expand", action="store_true", help="print the expanded JSON")
     ap.add_argument("--decode", action="store_true")
+    ap.add_argument("--short", action="store_true", help="also make an a47l.com short link (needs --live)")
     a = ap.parse_args()
 
     base = a.base or (LIVE if a.live else "file://" + LOCAL_APP)
     if a.decode:
-        print(json.dumps(decode(read_input(a.config)), indent=2)); return
+        print(json.dumps(decode(follow(read_input(a.config))), indent=2)); return
     if a.recipe:
         if a.recipe not in VOCAB["recipes"]: sys.exit("unknown recipe %r — have: %s" % (a.recipe, " ".join(VOCAB["recipes"])))
-        print(base + "#recipe=" + a.recipe + ("&view=viewer" if a.kiosk else "")); return
+        url = base + "#recipe=" + a.recipe + ("&view=viewer" if a.kiosk else "")
+        print(short_or_long(url, a.short, "recipe " + a.recipe)); return
 
     cfg = expand(json.loads(read_input(a.config)))
     if a.cam or a.mic or a.image:
@@ -361,8 +400,19 @@ def main():
     if a.code: print(b64(js)); return
     frag = ("cfgz=" + deflate(js)) if a.compress else ("cfg=" + b64(js))
     url = base + "#" + frag + ("&view=viewer" if a.kiosk else "")
-    print(url)
-    sys.stderr.write("%d zones · %d chars%s\n" % (len(cfg["state"]["zones"]), len(url), " · over ~2900 chars a QR code won't fit; try --compress" if len(url) > 2900 else ""))
+    sys.stderr.write("%d zones · %d chars%s\n" % (len(cfg["state"]["zones"]), len(url),
+                     " · over ~2900 chars a QR code won't fit; use --short" if len(url) > 2900 and not a.short else ""))
+    print(short_or_long(url, a.short, "%d zones" % len(cfg["state"]["zones"])))
+
+def short_or_long(url, want, notes):
+    if not want: return url
+    try:
+        s = shorten(url, "pixel-flow studio vibe · " + notes)
+        sys.stderr.write("a47l.com short link -> %s\n" % url[:80] + "…")
+        return s
+    except Exception as e:
+        sys.stderr.write("warn: short link unavailable (%s) — printing the full link\n" % e)
+        return url
 
 if __name__ == "__main__":
     main()
