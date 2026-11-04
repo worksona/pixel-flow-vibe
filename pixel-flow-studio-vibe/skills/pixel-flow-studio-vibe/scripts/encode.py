@@ -21,7 +21,15 @@ Usage
   encode.py look.json --code                   # base64 code for Share ▸ Load a look
   encode.py --decode '<url or code>'           # #cfg= or #cfgz= back to JSON (an a47l.com link is followed first)
   encode.py look.json --live --kiosk --short   # also make an a47l.com short link (falls back to the full one)
+  encode.py --style noir --pattern trailer --live --kiosk --short --title "Last Take"
+                                               # a themed look with no config file (style × pattern)
+  encode.py look.json --wide                   # widescreen 1280x720 stage (geometry is checked against it)
+  encode.py --list                             # themes, styles, patterns and their recipes
 Flags: --cam --mic --image f.jpg (source) · --compress (#cfgz=, Studio 2+ only)
+
+A config may carry a top-level theme block, which the Studio applies after loading:
+  {"theme": {"style": "noir", "pattern": "trailer", "presets": ["ghost"], "titles": {"lines": ["THE LAST TAKE"]}}}
+With no zones in state, the pattern builds them; the style is applied over whatever zones there are.
 """
 import sys, os, json, base64, zlib, argparse, re, random, math
 import urllib.request, urllib.error
@@ -33,7 +41,8 @@ LOCAL_APP = os.path.join(REPO, "v1", "pixel-flow-studio-pro.html")
 LIVE = "https://pixel-flow.atomic47.co/pixel-flow-studio-pro.html"
 # the site's own a47l.com proxy: it holds the token and only shortens live Studio share links
 SHORTEN = "https://pixel-flow.atomic47.co/.netlify/functions/shorten"
-W, H = 814, 768
+W, H = 814, 768                    # square stage; --wide or ui.stage "wide" switches to 1280x720
+STAGES = {"square": (814, 768), "wide": (1280, 720)}
 
 # ---------------------------------------------------------------- layouts
 def cells(r, cx, cy):
@@ -260,6 +269,7 @@ def validate_perform(cfg):
     p = cfg.get("perform")
     if p is None: return
     if not isinstance(p, dict): warn("perform must be an object"); return
+    if (cfg.get("theme") or {}).get("pattern"): warn("perform is ignored with theme.pattern: the pattern sets its own scene timing"); return
     known = {"cycle", "holdBars", "blendBars", "morph", "chain", "chainLoop", "autopilot", "autopilotGain", "play"}
     for k in p:
         if k not in known: warn("perform: unknown key %r (have: %s)" % (k, " ".join(sorted(known))))
@@ -270,7 +280,7 @@ def validate_perform(cfg):
     if p.get("morph") == "auto" and not (sc.get("A") and sc.get("B")): warn("perform.morph needs scenes A and B")
     hb, bb = p.get("holdBars", 1), p.get("blendBars", 1)
     if not (isinstance(hb, int) and 1 <= hb <= 32): warn("perform.holdBars must be 1..32")
-    if not (isinstance(bb, int) and 1 <= bb <= 8): warn("perform.blendBars must be 1..8")
+    if not (isinstance(bb, int) and 0 <= bb <= 8): warn("perform.blendBars must be 0..8 (0 = hard cuts)")
     elif isinstance(hb, int) and bb > hb: warn("perform.blendBars (%d) > holdBars (%d); the app clamps it" % (bb, hb))
     if "chain" in p:
         if not cfg["state"].get("songs"): warn("perform.chain needs state.songs")
@@ -280,7 +290,49 @@ def validate_perform(cfg):
     if "autopilot" in p and p["autopilot"] not in VOCAB["autopilots"]: warn("perform.autopilot must be one of %s" % VOCAB["autopilots"])
     if "autopilotGain" in p and not (0.2 <= float(p["autopilotGain"]) <= 2.5): warn("perform.autopilotGain must be 0.2..2.5")
 
+def validate_theme(cfg):
+    th = cfg.get("theme")
+    if th is None: return
+    if not isinstance(th, dict): warn("theme must be an object"); return
+    for k in th:
+        if k not in ("style", "pattern", "presets", "titles"): warn("theme: unknown key %r (have: style pattern presets titles)" % k)
+    if "style" in th and th["style"] not in VOCAB["styles"]: warn("theme.style %r unknown (have: %s)" % (th["style"], " ".join(VOCAB["styles"])))
+    if "pattern" in th and th["pattern"] not in VOCAB["patterns"]: warn("theme.pattern %r unknown (have: %s)" % (th["pattern"], " ".join(VOCAB["patterns"])))
+    for p in th.get("presets") or []:
+        if p not in VOCAB["presets"]: warn("theme.presets: unknown preset %r" % p)
+    if "titles" in th: validate_titles(th["titles"], "theme.titles")
+    if th.get("pattern") and cfg["state"].get("zones"): warn("theme.pattern is ignored when state has zones; drop the zones to let the pattern build them")
+
+def validate_titles(t, where):
+    if not isinstance(t, dict): warn("%s must be an object" % where); return
+    T = VOCAB["titles"]
+    for k, v in t.items():
+        if k == "lines":
+            if not (isinstance(v, list) and all(isinstance(x, str) for x in v)): warn("%s.lines must be a list of text ('Main title|subtitle')" % where)
+        elif k in ("mode", "pos", "font"):
+            if v not in T[k]: warn("%s.%s=%r not in %s" % (where, k, v, T[k]))
+        elif k == "every":
+            if v not in T["every"]: warn("%s.every must be one of %s bars" % (where, T["every"]))
+        elif k == "size":
+            if not (isinstance(v, (int, float)) and T["size"][0] <= v <= T["size"][1]): warn("%s.size must be %s..%s" % (where, *T["size"]))
+        elif k != "on": warn("%s: unknown key %r" % (where, k))
+
+def validate_film(cfg):
+    g = cfg["state"].get("global") or {}
+    F = VOCAB["film"]
+    for k, v in g.items():
+        if k == "grade" and v not in VOCAB["grades"]: warn("global.grade %r unknown (have: %s)" % (v, " ".join(VOCAB["grades"])))
+        elif k == "frame" and v not in VOCAB["frames"]: warn("global.frame %r unknown (have: %s)" % (v, " ".join(VOCAB["frames"])))
+        elif k == "fit" and v not in ("fill", "fit"): warn("global.fit must be fill or fit")
+        elif k == "fps" and v not in F["fps"]: warn("global.fps must be one of %s (0 = smooth)" % F["fps"])
+        elif k in F and k != "fps" and not (isinstance(v, (int, float)) and 0 <= v <= 1): warn("global.%s must be 0..1" % k)
+    if "titles" in cfg["state"]: validate_titles(cfg["state"]["titles"], "state.titles")
+    st = (cfg.get("ui") or {}).get("stage")
+    if st is not None and st not in STAGES: warn("ui.stage must be square or wide")
+
 def validate(cfg):
+    validate_theme(cfg); validate_film(cfg)
+    if not cfg["state"]["zones"] and not (cfg.get("theme") or {}).get("pattern"): warn("no zones and no theme.pattern: the link opens on an empty stage")
     fxkeys, ranges, enums = set(VOCAB["fx"]), VOCAB["ranges"], VOCAB["enums"]
     known_fx_params = set(ranges) | set(enums) | {"kernel"}
     for z in cfg["state"]["zones"]:
@@ -361,6 +413,7 @@ def follow(text):
     raise RuntimeError("could not resolve %s" % m.group(1))
 
 def read_input(arg):
+    if arg is None: sys.exit("give a config file (or - for stdin), or --style/--pattern for a themed look")
     if not arg or arg == "-": return sys.stdin.read()
     if os.path.exists(arg): return open(arg, encoding="utf-8").read()
     return arg
@@ -380,7 +433,21 @@ def main():
     ap.add_argument("--expand", action="store_true", help="print the expanded JSON")
     ap.add_argument("--decode", action="store_true")
     ap.add_argument("--short", action="store_true", help="also make an a47l.com short link (needs --live)")
+    ap.add_argument("--style", help="theme style (see --list)"); ap.add_argument("--pattern", help="theme pattern (see --list)")
+    ap.add_argument("--presets", help="comma-separated zone presets the pattern fills its zones with")
+    ap.add_argument("--title", help="title for the landing page (and the look's name)")
+    ap.add_argument("--wide", action="store_true", help="widescreen 1280x720 stage")
+    ap.add_argument("--list", action="store_true", help="list themes, styles, patterns and recipes")
     a = ap.parse_args()
+    global W, H
+    if a.list:
+        for tid, t in VOCAB["themes"].items():
+            print("%s — %s" % (t["name"], t["about"]))
+            print("  styles:   " + "  ".join("%s (%s)" % (s, VOCAB["styles"][s]["desc"]) for s in t["styles"]))
+            print("  patterns: " + "  ".join(t["patterns"]))
+            print("  recipes:  " + "  ".join(t["recipes"]))
+        print("patterns: " + "  ".join("%s (%s)" % (k, p["desc"]) for k, p in VOCAB["patterns"].items()))
+        return
 
     base = a.base or (LIVE if a.live else "file://" + LOCAL_APP)
     if a.decode:
@@ -390,7 +457,16 @@ def main():
         url = base + "#recipe=" + a.recipe + ("&view=viewer" if a.kiosk else "")
         print(short_or_long(url, a.short, "recipe " + a.recipe)); return
 
-    cfg = expand(json.loads(read_input(a.config)))
+    raw = json.loads(read_input(a.config)) if a.config else {"state": {}}
+    if a.style or a.pattern or a.presets:
+        th = raw.setdefault("theme", {})
+        if a.style: th["style"] = a.style
+        if a.pattern: th["pattern"] = a.pattern
+        if a.presets: th["presets"] = [p.strip() for p in a.presets.split(",") if p.strip()]
+    if a.title: raw["title"] = a.title
+    if a.wide: raw.setdefault("ui", {})["stage"] = "wide"
+    W, H = STAGES.get((raw.get("ui") or {}).get("stage") or "square", STAGES["square"])
+    cfg = expand(raw)
     if a.cam or a.mic or a.image:
         src = cfg.setdefault("src", {})
         if a.cam: src["cam"] = True

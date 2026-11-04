@@ -54,16 +54,21 @@ Expands to one zone per cell; slots repeat round-robin; a slot may set `shape`. 
 come **first** (behind); anything in `state.zones` stacks in front. Names and args are in
 `recipes.md`.
 
-## Effectors (`enabled` keys) — 39, grouped as in the app
+## Effectors (`enabled` keys) — 59, grouped as in the app
 
 - **Tiling**: `mosaic` `wallpaper` `affine` `kaleido` `mirror` `weave`
 - **Slicing**: `slice` `timeslice` `scan`
 - **Displace**: `flow` `wave` `ripple` `field` `displace` `smear` `melt`
-- **Warp**: `twist` `tunnel` `czoom`
+- **Warp**: `twist` `tunnel` `czoom` `xform`
 - **Glitch**: `glitch` `vhs` `rgb` `sort` `pixel`
-- **Color**: `hue` `invert` `posterize` `threshold` `solar` `colormtx` `dither`
-- **Stylize**: `dot` `ascii` `edges` `bloom` `convolve`
-- **Feedback**: `feedback` `echo` `clone`
+- **Color**: `hue` `hsv` `invert` `posterize` `threshold` `solar` `colormtx` `dither`
+- **Stylize**: `dot` `ascii` `edges` `bloom` `blur` `convolve`
+- **Feedback**: `feedback` `echo` `clone` `optic` `delay`
+- **Cellular**: `life` `brain` `cyclic` `rd` `shellca`
+- **Fractal**: `mandel` `julia` `cppn` `dejong` `lsys`
+- **Geometry**: `voronoi` `truchet` `spiro` `golden` `particles`
+
+**Generators** (Cellular, Fractal, Geometry, and `optic` Motion Map) render a layer that is blended into the zone's picture **before** the rest of its stack, so `kaleido`, `mosaic`, `bloom` and the rest treat it like any image. They share `genMix` (layer opacity), `genHue`, `genSpeed` and `genBlend`. Cellular ones seed from the picture (bright = alive) and re-spark on the kick, so they react to a camera. `delay` (Time Delay) shows the source from up to ~1 s ago; Split Reel and Montage use it.
 
 ### Which params each effector reads
 
@@ -82,6 +87,26 @@ come **first** (behind); anything in `state.zones` stacks in front. Names and ar
 | hue | hue hueSpeed · posterize / dither: posterize · threshold / solar: thresh · colormtx: cmat cmix |
 | dot | dotSize · ascii: ascii · bloom: bloomAmt · convolve: convKernel convAmt (kernel) |
 | feedback | feedback · echo: echoCount echoDecay · clone: cloneCount cloneSpread |
+| blur | blurR |
+| hsv | sat bri |
+| xform | xfZoom xfSpin |
+| optic | opThresh opGain trail genMix genHue genBlend |
+| life | genCell genSpeed genDensity genMix genHue genBlend |
+| brain | genCell genSpeed genDensity genMix genHue genBlend |
+| cyclic | genCell genSpeed caStates genMix genHue genBlend |
+| rd | rdFeed rdKill genSpeed genMix genHue genBlend |
+| shellca | caRule genCell genSpeed genMix genHue genBlend |
+| mandel | fracZoom genSpeed genMix genHue genBlend |
+| julia | juliaR fracZoom genSpeed genMix genHue genBlend |
+| cppn | cppnScale genSpeed seed genMix genHue genBlend |
+| dejong | genSpeed trail genMix genHue genBlend |
+| lsys | lsysRule lsysDepth lsysAngle lineW genSpeed genMix genHue genBlend |
+| voronoi | voroCells voroMode genSpeed genMix genHue genBlend |
+| truchet | truCols truStyle lineW genSpeed genMix genHue genBlend |
+| spiro | spiroR spiror spirod genSpeed genMix genHue genBlend |
+| golden | lineW genSpeed genMix genHue genBlend |
+| particles | partCount partSwirl partGrav trail genSpeed genMix genHue genBlend |
+| delay | delayFrames |
 | every zone | opacity scale rotation feather blend seed motion motionAmt motionSpeed shapeMorph (rect) innerR (ring) |
 
 ## fx params + ranges `[min, max]`
@@ -164,6 +189,18 @@ Play them in order with `perform.chain`.
 
 `grain`[0,0.5] `vignette`[0,1] `strobe`[0,1] (flash on kick) `feedback`[0,0.6] `dim`[0,1].
 
+Film settings live here too: `grade` `frame` `fit` `weave` `dust` `scratch` `halation` `leaks` `flicker` `iris` `fps`. See `reference/themes.md` for values; a style sets them all at once.
+
+New fx params (Studio 3): `seed`[0,999] `blurR`[0,24] `sat`[0,3] `bri`[0,3] `xfZoom`[0.2,3] `xfSpin`[-3,3] `opThresh`[0,1] `opGain`[0.5,6] `trail`[0,0.98] `genMix`[0,1] `genHue`[0,360] `genCell`[2,20] `genSpeed`[0,4] `genDensity`[0.05,0.8] `caStates`[3,16] `rdFeed`[0.01,0.09] `rdKill`[0.03,0.07] `caRule`[0,255] `fracZoom`[0.4,40] `juliaR`[0.1,0.95] `cppnScale`[0.5,6] `lsysDepth`[1,6] `lsysAngle`[5,90] `lineW`[1,10] `voroCells`[4,80] `truCols`[4,40] `spiroR`[20,140] `spiror`[5,90] `spirod`[5,120] `partCount`[20,1500] `partSwirl`[-3,3] `partGrav`[-2,2] `delayFrames`[0,23]. Enums: `genBlend` screen lighter source-over multiply overlay difference · `lsysRule` plant tree koch dragon sierpinski · `voroMode` glass flat edges dots · `truStyle` arcs diagonals.
+
+## Titles (`state.titles`) and stage (`ui.stage`)
+
+One title line per hold, drawn inside the letterbox. `{"on":true,"lines":["Main|subtitle"],"mode":"fade","every":4,"pos":"center","font":"serif","size":1}`. `ui.stage` is `square` (814×768) or `wide` (1280×720). Details in `reference/themes.md`.
+
+## Theme block (`theme`)
+
+`{"theme":{"style":"noir","pattern":"trailer","presets":["ghost"],"titles":{...}}}` builds a themed screen. See `reference/themes.md`.
+
 ## Scenes (`state.scenes`) — up to four looks of the same zones
 
 Author scenes as **overrides of the zones as written** (scene A); the encoder turns them into full
@@ -202,7 +239,7 @@ snapshots:
 |---|---|
 | `cycle` | walk the scenes A→B→C→D→A…; needs 2+ scenes |
 | `holdBars` | bars each scene holds, 1–32 (the opening scene holds its full length first) |
-| `blendBars` | bars each transition takes, 1–8, at most `holdBars` |
+| `blendBars` | bars each transition takes, 0–8, at most `holdBars`; **0 = hard cuts** |
 | `morph` | `"auto"`: a ~16 s sine sweep A↔B instead of `cycle` |
 | `chain` | play songs in order, `song` 1–5, `loops` 1–16 (one loop = 4 bars) |
 | `chainLoop` | repeat the chain (default true) |

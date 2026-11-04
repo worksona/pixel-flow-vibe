@@ -1,6 +1,6 @@
 ---
 name: pixel-flow-studio-vibe
-description: Vibe-code Pixel Flow Studio, the zone-based visual instrument, from natural language. Given a described look ("glitchy VHS grid pulsing to a kick", "slow dreamy orbs drifting over a liquid bed", "a broadcast TV wall for a techno set"), compose a whole screen — a layout of zones, a preset and motion per zone, a groove, mod-matrix amounts and post FX — validate it against the Studio vocabulary, encode it into a share link that opens the look running (optionally fullscreen kiosk), and hand back the link plus the knobs to turn next. Trigger on /pixel-flow-studio-vibe, or when the user asks for a Studio look, scene, screen, recipe, zone layout, VJ visual, beat-reactive visual, or to remix a Studio share link. For node-graph patches (3D, particles, tracking, synth rack) use /pixel-flow-vibe instead.
+description: Vibe-code Pixel Flow Studio, the zone-based visual instrument, from natural language. Given a described look ("glitchy VHS grid pulsing to a kick", "slow dreamy orbs drifting over a liquid bed", "a broadcast TV wall for a techno set"), compose a whole screen — a layout of zones, a preset and motion per zone, a groove, mod-matrix amounts and post FX — validate it against the Studio vocabulary, encode it into a share link that opens the look running (optionally fullscreen kiosk), and hand back the link plus the knobs to turn next. Trigger on /pixel-flow-studio-vibe, or when the user asks for a Studio look, scene, screen, recipe, zone layout, VJ visual, beat-reactive visual, or to remix a Studio share link. Also themed looks: a style (film noir, Technicolor, Super 8, neon noir, VHS horror, techno, ocean, Halloween, keynote…) times a pattern (trailer cuts, slow burn, split reel, montage, opening titles…), movie-clip looks, title cards and widescreen. For node-graph patches (3D, particles, tracking, synth rack) use /pixel-flow-vibe instead.
 ---
 
 # Pixel Flow Studio Vibe
@@ -12,22 +12,31 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 
 ## How Studio thinks (read once)
 
-- The canvas is **814 × 768**. A look is a stack of **zones** (back to front). Each zone is a
+- The canvas is **814 × 768**, or **1280 × 720** with `--wide` (`ui.stage: "wide"`). A look is a stack of **zones** (back to front). Each zone is a
   shape (rect · ellipse · ring · lasso) that re-renders the source under it through a stack of
-  **effectors** (39 of them), animated by **LFOs** and a **motion** that moves the zone itself.
-- A **preset** is one zone's effector stack + LFOs (24 of them, e.g. `glitch`, `dream`, `vhs`).
+  **effectors** (59 of them, including generators: Life, Reaction Diffusion, Mandelbrot, Voronoi, Particles…), animated by **LFOs** and a **motion** that moves the zone itself.
+- A **preset** is one zone's effector stack + LFOs (48 of them, e.g. `glitch`, `dream`, `vhs`, `conway`, `glass`, `motionmap`).
 - A **recipe** is a whole screen: a **layout** of zones × a preset and motion per zone × BPM,
-  groove, mod-matrix and post FX. 20 stock recipes ship in the app (`reference/recipes.md`).
+  groove, mod-matrix and post FX. 56 stock recipes ship in the app (`reference/recipes.md`).
+- A **style** is a whole-screen look (grade, letterbox, film grain, dust, halation, palette); a **pattern** is
+  layout + timing (cuts, holds, push-ins). **recipe = pattern × style × source.** Themes group them:
+  Movie, Music, Nature, Occasions, Stage (`reference/themes.md`, `encode.py --list`).
 - A 64-step **sequencer** (Kick Snare Hat Bass Glitch Morph Visual) drives a small synth and,
   through the **mod matrix**, punches visual params on each hit. Mic FFT can do the same.
 
 ## Workflow
 
-1. **Read `reference/schema.md` and `reference/recipes.md` every run.** Never invent an
+1. **Read `reference/schema.md`, `reference/recipes.md` and `reference/themes.md` every run.** Never invent an
    effector, preset, param, enum value, layout or recipe id. Respect ranges.
-2. **Decide: stock recipe or authored look.**
+2. **Decide: stock recipe, themed look, or authored look.**
    - The ask matches a stock recipe closely ("dreamy kaleidoscope", "DVD bouncing tiles") →
      link the recipe: `encode.py --recipe mandala --live --kiosk --short`. Shortest link, nothing to get wrong.
+   - The ask names a mood, genre, era, film or occasion ("noir", "70s horror trailer", "Super 8 home movie",
+     "synthwave", "Halloween", "background for my talk") → a **themed look**: pick a style and a pattern from
+     `reference/themes.md` and encode them, no zones needed:
+     `encode.py --style noir --pattern slowburn --presets ghost --title "…" --live --kiosk --compress --short`.
+     Iterate by swapping one of them ("same, but Technicolor" = change `--style` only).
+   - A style also goes on top of an authored look: add `"theme": {"style": "super8"}` to the config.
    - Otherwise author a config (step 3). Start from the nearest recipe's spirit.
 3. **Author the smallest config that says it.** Use the shorthands — they keep configs short
    and readable, and the encoder expands them:
@@ -65,6 +74,9 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
 | `--kiosk` | open fullscreen, output only — "send someone the finished piece" |
 | `--recipe ID` | link a stock recipe instead of a config |
 | `--compress` | `#cfgz=` deflate link, ~half the length (Studio 2 only) |
+| `--style ID` `--pattern ID` `--presets a,b` | a themed look with no config file; `--list` shows the ids |
+| `--title TEXT` | name the look (the kiosk landing card shows it) |
+| `--wide` | widescreen 1280×720 stage; geometry is checked against it |
 | `--short` | also make an **a47l.com** short link through the site's shortener (needs `--live`; prints the full link and a warning if shortening is unavailable). Use it for every link someone else opens: short links fit any QR code and survive chat apps |
 | `--cam` `--mic` `--image f.jpg` | source the link opens with (cam/mic arm on first tap) |
 | `--check` / `--expand` / `--code` / `--decode` | validate · print expanded JSON · base64 only · link → JSON (a47l.com links are followed first) |
@@ -136,13 +148,22 @@ single frame (`reference/schema.md` → Scenes, Songs, Perform):
 - Set `ui.mod` to 0 so nothing else reacts, and introduce one lane per song so the viewer learns the
   mapping: bass alone → + kick → + hats → denser → back to one.
 
+**Movies and video** — "make my clip look like…": build a themed look from the Movie theme and tell the user
+to import the clip with **⌘I** once the link opens (a link cannot carry a video). The clip plays with sound and its
+soundtrack drives the visuals. Use `--wide` so recordings come out 1280×720. **J** plays / pauses, ⌥[ ⌥] set a loop.
+
+**Title cards** — `theme.titles` (or `state.titles`): `{"lines": ["Main title|subtitle", "…"], "pos": "center"}`; one line
+shows per hold, inside the letterbox. The `opening` pattern turns titles on.
+
+**Hard cuts** — `perform.blendBars: 0` cuts between scenes instead of blending (the `trailer` pattern does this).
+
 **Beat-reactive**: set `seq` (or say which groove), raise `ui.mod` amounts, add `global.strobe`.
 **Mic-reactive**: add `--mic` and raise `ui.mod.Low` / `Mid` / `High`.
 **Camera as the source**: add `--cam`; effectors then remix the live camera.
 
 ## Rules
 
-- Names come only from `reference/schema.md`. Run `--check`; zero warnings before delivering.
+- Names come only from `reference/schema.md` and `reference/themes.md`. Run `--check`; zero warnings before delivering.
 - Keep zones to 1–16 (24 at most). Rich looks come from 2–4 effectors per zone, not 10.
 - Every zone needs at least one effector, or it just shows the source.
 - Hand back links, not JSON, unless asked. Open the link in a browser only if asked.

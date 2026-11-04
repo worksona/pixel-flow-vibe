@@ -61,6 +61,81 @@ In the app: **Recipes ▾** in the top bar, **⇧1–0** for the first ten, or �
 
 Keys **1–0** apply the first ten (glitch … neon) to the selected zone in the app.
 
+
+## Presets added in Studio 3 (`zone.preset`)
+
+From Pixel Flow Nodes v1/v2: generators, the three missing filters, and the Nodes preset looks.
+
+| id | group | effectors | LFO |
+|---|---|---|---|
+| `conway` | Cellular | life bloom feedback | genHue sine |
+| `spark` | Cellular | brain rgb echo | — |
+| `spirals` | Cellular | cyclic twist | twist sine |
+| `coral` | Cellular | rd hsv bloom | — |
+| `mandelzoom` | Fractal | mandel bloom | — |
+| `juliatunnel` | Fractal | julia feedback tunnel | juliaR sine |
+| `neural` | Fractal | cppn hsv | cppnScale sine |
+| `smoke` | Fractal | dejong bloom | — |
+| `plant` | Growth | lsys bloom | — |
+| `shell` | Growth | shellca posterize | — |
+| `spirograph` | Growth | spiro feedback hue | — |
+| `goldenspiral` | Growth | golden bloom echo | — |
+| `glass` | Geometry | voronoi | — |
+| `cells` | Geometry | voronoi bloom | — |
+| `truchet` | Geometry | truchet hue | — |
+| `swarmfield` | Geometry | particles bloom | — |
+| `motionmap` | Camera | optic bloom echo | — |
+| `asciicam` | Camera | hsv ascii | — |
+| `camkaleido` | Camera | feedback kaleido | kaleido sine |
+| `blurglow` | Camera | blur edges bloom | — |
+| `kaleidotrails` | Nodes | kaleido rgb feedback | kaleido sine |
+| `liquidmandala` | Nodes | field wallpaper bloom feedback | fieldAmt sine |
+| `datamosh` | Nodes | glitch sort rgb | glitchAmt noise |
+| `infinitetunnel` | Nodes | twist czoom feedback xform | twist sine |
+
+## Recipes added in Studio 3 (`encode.py --recipe <id>`)
+
+Theme recipes pair a style with a pattern; see `reference/themes.md` for the theme groups.
+
+| id | name | group | layout | what you see |
+|---|---|---|---|---|
+| `lifegrid` | Life Grid | Generative | grid3 | 3×3 automata (Life, Brain, Cyclic) seeded from the picture, sparked by the kick |
+| `fractalwindow` | Fractal Window | Generative | pip | A Mandelbrot zoom journey with a drifting Julia picture-in-picture |
+| `coralreef` | Coral Reef | Generative | full | Reaction–diffusion coral growing over a liquid field |
+| `garden` | Garden | Generative | bands | Three bands: an L-system plant, a shell pattern and a spirograph |
+| `particlesea` | Particle Sea | Generative | ringCenter | A particle swirl with attractor smoke in a ring at the centre |
+| `neuralquilt` | Neural Quilt | Generative | grid2 | 2×2 of a CPPN net, Voronoi cells, Truchet tiles and a golden spiral |
+| `mirrorhall` | Mirror Hall | Camera | full | Your movement glows and trails, kaleidoscoped. Press K for the camera |
+| `stainedglass` | Stained Glass | Camera | splitV | The picture as drifting stained glass beside an ASCII copy. Press K for the camera |
+| `lifemirror` | Life Mirror | Camera | full | Conway's Life seeded from the picture and re-sparked on every kick. Press K for the camera |
+| `noirburn` | Noir Slow Burn | Movie | full | Black-and-white push-in with smoke and dust. Best on a movie clip or the camera |
+| `noirtrailer` | Noir Trailer | Movie | full | Hard cuts every bar, flashes on the beat, in black and white |
+| `technicolortitles` | Technicolor Titles | Movie | full | Saturated Academy-frame opening with fading title cards |
+| `super8montage` | Super 8 Montage | Movie | grid3 | Home-movie grid of time-delayed copies, light leaks and 18 fps |
+| `silentreel` | Silent Reel | Movie | full | Sepia, iris and scratches with intertitles |
+| `neontrailer` | Neon Noir Trailer | Movie | full | Teal-and-orange scope frame, halation, cuts on the kick |
+| `neonsplit` | Neon Split Reel | Movie | bands | Three neon bands, each a moment behind |
+| `coderain` | Code Rain | Movie | bands | Green code bands sliding through time |
+| `foundtape` | Found Tape | Movie | full | A washed-out tape that cuts and flashes |
+| `pastelsymmetry` | Pastel Symmetry | Movie | full | Centred, mirrored and pastel, with a slow push-in |
+| `technogrid` | Techno Grid | Music | grid3 | Cold 3×3 wall strobing at 128 |
+| `ambientdrift` | Ambient Drift | Music | scatter | Soft shapes wandering over a calm grade |
+| `synthwavewheel` | Synthwave Wheel | Music | wedges | Scope-framed neon wedges with scanlines |
+| `hiphopsplit` | Gold Split | Music | bands | Warm printed bands with crate dust |
+| `dnbmontage` | Jungle Montage | Music | grid3 | Hot, fast grid of delayed glitch cells |
+| `oceanslow` | Deep Water | Nature | full | A slow push into liquid blue |
+| `forestdrift` | Forest Floor | Nature | scatter | Plants growing between drifting light |
+| `firewheel` | Fire Wheel | Nature | wedges | Embers spinning in eight wedges |
+| `auroradrift` | Northern Lights | Nature | scatter | Aurora colours drifting with particles |
+| `stormtrailer` | Storm | Nature | full | Lightning cuts in black and white |
+| `halloweentape` | Halloween Tape | Occasions | full | Pumpkin and violet tape that jumps on the beat |
+| `wintersnow` | Snowfall | Occasions | scatter | Frosted shapes and falling specks |
+| `pridewheel` | Pride Wheel | Occasions | wedges | Every colour turning together |
+| `newyearmontage` | Midnight | Occasions | grid3 | Gold sparks and a countdown grid |
+| `stagecalm` | Quiet Stage | Stage | full | A low, slow field behind a speaker |
+| `stagebrand` | Brand Stage | Stage | full | Atomic 47 lime and blue, barely moving |
+| `keynote` | Keynote | Stage | full | Dimmed monochrome that keeps slides readable |
+
 ## Layouts (`state.layout.name`, encoder-side)
 
 All take the full canvas `[0,0,814,768]` unless `rect: [x,y,w,h]` is given.
