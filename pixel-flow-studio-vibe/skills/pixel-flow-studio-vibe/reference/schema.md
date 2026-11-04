@@ -131,8 +131,22 @@ smearAng weaveAmt timeDepth innerR convAmt cmix mtxRot mtxScale fieldAmt shapeMo
 Lanes: `Kick` `Snare` `Hat` `Bass` `Glitch` `Morph` `Visual`. Shorter arrays tile to 64 (a
 16-step groove plays four times). Kick/Snare/Hat/Bass play the synth and drive envelopes;
 `Glitch` fires glitch bursts; `Morph` flips scene A/B; `Visual` re-rolls the selected zone.
-`ui.bpm` sets tempo, `ui.swing` 0–0.45. Optional `state.songs` (exactly 5 of
-`{bpm,swing,seq}`) + `state.songIdx` ship a 5-song set.
+`ui.bpm` sets tempo, `ui.swing` 0–0.45.
+
+Authoring conveniences (encoder): a lane may be a string of 0/1 (`"1000100010001000"`,
+spaces and `|` ignored, 16/32/64 long), and `state.groove` names a stock groove
+(`four` `break` `half` `techno` `trap` `slow` `silence`) that `seq` lanes then override.
+
+## Songs (`state.songs`) — a 5-slot set
+
+```json
+"songs": [ { "bpm": 140, "groove": "four", "seq": { "Visual": "1000000000000000" } },
+           { "bpm": 148, "seq": { "Kick": "1000100010001000", "Hat": "1111111111111111" } } ]
+```
+
+1–5 songs of `{bpm, swing, seq | groove}`; the encoder pads to the 5 slots the app keeps and starts
+the live groove and tempo from song 1 (or `state.songIdx`). One song = one 64-step loop (4 bars).
+Play them in order with `perform.chain`.
 
 ## Mod matrix (`ui.mod`) — audio → visual
 
@@ -143,10 +157,56 @@ Lanes: `Kick` `Snare` `Hat` `Bass` `Glitch` `Morph` `Visual`. Shorter arrays til
 
 `grain`[0,0.5] `vignette`[0,1] `strobe`[0,1] (flash on kick) `feedback`[0,0.6] `dim`[0,1].
 
-## Scenes (optional)
+## Scenes (`state.scenes`) — up to four looks of the same zones
 
-`state.scenes = {"A": snapshot|null, "B": ..., "C": ..., "D": ...}`, a snapshot being an array of
-`{id,x,y,w,h,fx,enabled}` per zone. Morph blends A↔B; usually let the user capture these live.
+Author scenes as **overrides of the zones as written** (scene A); the encoder turns them into full
+snapshots:
+
+```json
+"scenes": {
+  "B": { "Neon*": { "fx": { "hue": 350, "scale": 0.7 }, "enabled": { "kaleido": true } },
+         "Rose Window": { "x": 57, "y": 34, "w": 700, "h": 700, "fx": { "innerR": 0.62 } } },
+  "C": { "*": { "fx": { "opacity": 0.4 } }, "Glitch*": { "preset": "emboss", "motion": "none" } },
+  "D": { ... }
+}
+```
+
+- Selectors: `"*"` (every zone), an exact zone name or id, or a name prefix ending in `*`.
+  Layout zones are named after their preset plus a number (`Neon 1`, `Prism 2`, …), so `"Neon*"`
+  addresses all of them. Later selectors win.
+- An override may set `x` `y` `w` `h`, `fx {}`, `enabled {}`, `preset` (swaps the whole effector
+  stack) and `motion`.
+- Between scenes, geometry and every numeric param **blend**; effector stacks, `blend`,
+  `sliceDir`, `sliceMode` and `motion` **switch** at the midpoint.
+- A zone with `"scenes": false` stays out of every scene and keeps its own motion (use it for a
+  `dvd` zone, which scenes would otherwise pin in place).
+- `"A": {...}` is optional; give it to make the opening scene differ from the zones as written.
+- Raw snapshots (arrays of `{id,x,y,w,h,fx,enabled}`) also work and pass straight through.
+
+## Perform (`perform`) — what runs when the link opens (Studio 2)
+
+```json
+"perform": { "cycle": true, "holdBars": 6, "blendBars": 3,
+             "chain": [ { "song": 1, "loops": 1 }, { "song": 2, "loops": 2 } ], "chainLoop": true,
+             "autopilot": "drift", "autopilotGain": 0.4 }
+```
+
+| key | meaning |
+|---|---|
+| `cycle` | walk the scenes A→B→C→D→A…; needs 2+ scenes |
+| `holdBars` | bars each scene holds, 1–32 (the opening scene holds its full length first) |
+| `blendBars` | bars each transition takes, 1–8, at most `holdBars` |
+| `morph` | `"auto"`: a ~16 s sine sweep A↔B instead of `cycle` |
+| `chain` | play songs in order, `song` 1–5, `loops` 1–16 (one loop = 4 bars) |
+| `chainLoop` | repeat the chain (default true) |
+| `autopilot` | `drift` `storm` `bloom` `matrix`: nudge one zone every bar |
+| `autopilotGain` | 0.2–2.5, how hard autopilot pushes (1 = default) |
+| `play` | false to open paused |
+
+**Long-form tip**: make the scene cycle and the song chain different lengths so they drift against
+each other (e.g. 4 scenes × 6 bars = 24 bars against a 32-bar chain repeats only every 96 bars).
+Keep `autopilotGain` low (0.3–0.6) so scenes stay recognisable. Share links made in the app carry
+`perform` too, so whatever is running when someone presses Share is what the link replays.
 
 ## Links
 
