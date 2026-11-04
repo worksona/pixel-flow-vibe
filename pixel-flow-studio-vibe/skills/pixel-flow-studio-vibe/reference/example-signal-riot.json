@@ -1,81 +1,383 @@
 {
-  "ui": { "swing": 0.04, "mod": { "Kick": 240, "Snare": 100, "Hat": 34, "Bass": 60, "High": 60 } },
+  "title": "Signal Riot",
+  "about": "Broken broadcast to blackout to overload, across a club set.",
+  "ui": {
+    "swing": 0.04,
+    "mod": {
+      "Kick": 240,
+      "Snare": 100,
+      "Hat": 34,
+      "Bass": 60,
+      "High": 60
+    }
+  },
   "state": {
-    "layout": { "name": "shatter", "args": [23], "slots": [
-      { "preset": "glitch", "motion": "shake", "fx": { "motionAmt": 12 } },
-      { "preset": "sortstorm" },
-      { "preset": "vhs", "motion": "shake", "fx": { "motionAmt": 8 } },
-      { "preset": "riso" },
-      { "preset": "matrixtv" }
-    ]},
+    "layout": {
+      "name": "shatter",
+      "args": [
+        23
+      ],
+      "slots": [
+        {
+          "preset": "glitch",
+          "motion": "shake",
+          "fx": {
+            "motionAmt": 12
+          }
+        },
+        {
+          "preset": "sortstorm"
+        },
+        {
+          "preset": "vhs",
+          "motion": "shake",
+          "fx": {
+            "motionAmt": 8
+          }
+        },
+        {
+          "preset": "riso"
+        },
+        {
+          "preset": "matrixtv"
+        }
+      ]
+    },
     "zones": [
-      { "name": "Strobe Core", "preset": "tunnel", "shape": "ellipse", "x": 357, "y": 334, "w": 100, "h": 100,
-        "enabled": { "bloom": true }, "fx": { "blend": "screen", "opacity": 0.25, "feather": 20, "bloomAmt": 0.7 } },
-      { "name": "Signal Bar", "preset": "timewarp", "x": 0, "y": 340, "w": 814, "h": 88, "motion": "bounce",
-        "enabled": { "glitch": true },
-        "fx": { "motionAmt": 40, "motionSpeed": 1.2, "slices": 40, "sliceDir": "v", "glitchAmt": 40, "blend": "difference", "opacity": 0.9 } },
-      { "name": "Pirate Feed", "preset": "kernel", "x": 40, "y": 40, "w": 250, "h": 180, "motion": "dvd", "scenes": false,
-        "enabled": { "scan": true, "rgb": true },
-        "fx": { "motionSpeed": 1.6, "scan": 5, "rgb": 22, "blend": "source-over" } }
+      {
+        "name": "Strobe Core",
+        "preset": "tunnel",
+        "shape": "ellipse",
+        "x": 357,
+        "y": 334,
+        "w": 100,
+        "h": 100,
+        "enabled": {
+          "bloom": true
+        },
+        "fx": {
+          "blend": "screen",
+          "opacity": 0.25,
+          "feather": 20,
+          "bloomAmt": 0.7
+        }
+      },
+      {
+        "name": "Signal Bar",
+        "preset": "timewarp",
+        "x": 0,
+        "y": 340,
+        "w": 814,
+        "h": 88,
+        "motion": "bounce",
+        "enabled": {
+          "glitch": true
+        },
+        "fx": {
+          "motionAmt": 40,
+          "motionSpeed": 1.2,
+          "slices": 40,
+          "sliceDir": "v",
+          "glitchAmt": 40,
+          "blend": "difference",
+          "opacity": 0.9
+        }
+      },
+      {
+        "name": "Pirate Feed",
+        "preset": "kernel",
+        "x": 40,
+        "y": 40,
+        "w": 250,
+        "h": 180,
+        "motion": "dvd",
+        "scenes": false,
+        "enabled": {
+          "scan": true,
+          "rgb": true
+        },
+        "fx": {
+          "motionSpeed": 1.6,
+          "scan": 5,
+          "rgb": 22,
+          "blend": "source-over"
+        }
+      }
     ],
     "songs": [
-      { "bpm": 140, "groove": "four", "seq": { "Visual": "1000000000000000" } },
-      { "bpm": 148, "seq": {
-          "Kick":   "1000100010001000 1000100010001000 1000100010001010 1000100010101010",
-          "Snare":  "0000100000001000 0000100000001000 0000100000001001 0000100010101111",
-          "Hat":    "0010001000100010 0011001000110010 1011101110111011 1111111111111111",
-          "Bass":   "1001001010010010",
+      {
+        "bpm": 140,
+        "groove": "four",
+        "seq": {
+          "Visual": "1000000000000000"
+        }
+      },
+      {
+        "bpm": 148,
+        "seq": {
+          "Kick": "1000100010001000 1000100010001000 1000100010001010 1000100010101010",
+          "Snare": "0000100000001000 0000100000001000 0000100000001001 0000100010101111",
+          "Hat": "0010001000100010 0011001000110010 1011101110111011 1111111111111111",
+          "Bass": "1001001010010010",
           "Glitch": "0000000000000000 0000000100000001 0000000000000011 0001000100110111",
-          "Visual": "1000000000000000 1000000000000000 1000000010000000 1000100010001000" } },
-      { "bpm": 120, "groove": "half", "seq": { "Hat": "0000000000000000 0000100000001000 0000000000000000 0010001000101010",
-                                                "Glitch": "0000000000000000 0000000000000000 0000000000000000 0000000000000111" } },
-      { "bpm": 148, "seq": {
-          "Kick":  "1000100010001000",
+          "Visual": "1000000000000000 1000000000000000 1000000010000000 1000100010001000"
+        }
+      },
+      {
+        "bpm": 120,
+        "groove": "half",
+        "seq": {
+          "Hat": "0000000000000000 0000100000001000 0000000000000000 0010001000101010",
+          "Glitch": "0000000000000000 0000000000000000 0000000000000000 0000000000000111"
+        }
+      },
+      {
+        "bpm": 148,
+        "seq": {
+          "Kick": "1000100010001000",
           "Snare": "0000000000000000 0000100000001000 0000100010001000 1010101011111111",
-          "Hat":   "1111111111111111",
-          "Bass":  "1000000010000000 1000000010000000 1000100010001000 1010101010101010",
-          "Glitch":"0000000000000000 0000000000000000 0000000000000001 0000000100010111" } },
-      { "bpm": 156, "groove": "trap", "seq": {
-          "Bass":   "1001001010010010",
+          "Hat": "1111111111111111",
+          "Bass": "1000000010000000 1000000010000000 1000100010001000 1010101010101010",
+          "Glitch": "0000000000000000 0000000000000000 0000000000000001 0000000100010111"
+        }
+      },
+      {
+        "bpm": 156,
+        "groove": "trap",
+        "seq": {
+          "Bass": "1001001010010010",
           "Glitch": "0001000100010011",
-          "Visual": "1000100010001000" } }
+          "Visual": "1000100010001000"
+        }
+      }
     ],
     "scenes": {
       "B": {
-        "Glitch*":    { "preset": "vhs",       "fx": { "scale": 0.86, "rotation": 0.18 } },
-        "Sortstorm*": { "preset": "riso",      "fx": { "scale": 0.86, "rotation": -0.18 } },
-        "Vhs*":       { "preset": "matrixtv",  "fx": { "scale": 0.86, "rotation": 0.18 }, "motion": "none" },
-        "Riso*":      { "preset": "glitch",    "fx": { "scale": 0.86, "rotation": -0.18 }, "motion": "shake" },
-        "Matrixtv*":  { "preset": "sortstorm", "fx": { "scale": 0.86, "rotation": 0.18 } },
-        "Strobe Core": { "x": 157, "y": 134, "w": 500, "h": 500, "fx": { "opacity": 0.85, "feather": 40, "mtxRot": 1.0 } },
-        "Signal Bar":  { "x": 362, "y": 0, "w": 90, "h": 768, "fx": { "sliceDir": "h", "motionAmt": 14, "glitchAmt": 60 }, "motion": "shake" }
+        "Glitch*": {
+          "preset": "vhs",
+          "fx": {
+            "scale": 0.86,
+            "rotation": 0.18
+          }
+        },
+        "Sortstorm*": {
+          "preset": "riso",
+          "fx": {
+            "scale": 0.86,
+            "rotation": -0.18
+          }
+        },
+        "Vhs*": {
+          "preset": "matrixtv",
+          "fx": {
+            "scale": 0.86,
+            "rotation": 0.18
+          },
+          "motion": "none"
+        },
+        "Riso*": {
+          "preset": "glitch",
+          "fx": {
+            "scale": 0.86,
+            "rotation": -0.18
+          },
+          "motion": "shake"
+        },
+        "Matrixtv*": {
+          "preset": "sortstorm",
+          "fx": {
+            "scale": 0.86,
+            "rotation": 0.18
+          }
+        },
+        "Strobe Core": {
+          "x": 157,
+          "y": 134,
+          "w": 500,
+          "h": 500,
+          "fx": {
+            "opacity": 0.85,
+            "feather": 40,
+            "mtxRot": 1.0
+          }
+        },
+        "Signal Bar": {
+          "x": 362,
+          "y": 0,
+          "w": 90,
+          "h": 768,
+          "fx": {
+            "sliceDir": "h",
+            "motionAmt": 14,
+            "glitchAmt": 60
+          },
+          "motion": "shake"
+        }
       },
       "C": {
-        "Glitch*":    { "preset": "emboss", "fx": { "opacity": 0.5 }, "motion": "none" },
-        "Sortstorm*": { "preset": "emboss", "fx": { "opacity": 0.4 } },
-        "Vhs*":       { "preset": "halftone", "fx": { "opacity": 0.5 }, "motion": "none" },
-        "Riso*":      { "preset": "emboss", "fx": { "opacity": 0.45 } },
-        "Matrixtv*":  { "preset": "halftone", "fx": { "opacity": 0.5 } },
-        "Strobe Core": { "x": 307, "y": 284, "w": 200, "h": 200, "fx": { "opacity": 0.95, "feather": 10 } },
-        "Signal Bar":  { "x": 0, "y": 0, "w": 814, "h": 60, "fx": { "sliceDir": "v", "glitchAmt": 20, "opacity": 0.7 }, "motion": "none" }
+        "Glitch*": {
+          "preset": "emboss",
+          "fx": {
+            "opacity": 0.5
+          },
+          "motion": "none"
+        },
+        "Sortstorm*": {
+          "preset": "emboss",
+          "fx": {
+            "opacity": 0.4
+          }
+        },
+        "Vhs*": {
+          "preset": "halftone",
+          "fx": {
+            "opacity": 0.5
+          },
+          "motion": "none"
+        },
+        "Riso*": {
+          "preset": "emboss",
+          "fx": {
+            "opacity": 0.45
+          }
+        },
+        "Matrixtv*": {
+          "preset": "halftone",
+          "fx": {
+            "opacity": 0.5
+          }
+        },
+        "Strobe Core": {
+          "x": 307,
+          "y": 284,
+          "w": 200,
+          "h": 200,
+          "fx": {
+            "opacity": 0.95,
+            "feather": 10
+          }
+        },
+        "Signal Bar": {
+          "x": 0,
+          "y": 0,
+          "w": 814,
+          "h": 60,
+          "fx": {
+            "sliceDir": "v",
+            "glitchAmt": 20,
+            "opacity": 0.7
+          },
+          "motion": "none"
+        }
       },
       "D": {
-        "Glitch*":    { "preset": "glitch", "fx": { "scale": 1, "rotation": 0, "motionAmt": 16 }, "motion": "shake" },
-        "Sortstorm*": { "preset": "glitch", "fx": { "scale": 1, "rotation": 0, "motionAmt": 16 }, "motion": "shake" },
-        "Vhs*":       { "preset": "vhs",    "fx": { "scale": 1, "rotation": 0, "motionAmt": 16 }, "motion": "shake" },
-        "Riso*":      { "preset": "glitch", "fx": { "scale": 1, "rotation": 0, "motionAmt": 16 }, "motion": "shake" },
-        "Matrixtv*":  { "preset": "vhs",    "fx": { "scale": 1, "rotation": 0, "motionAmt": 16 }, "motion": "shake" },
-        "Strobe Core": { "x": 7, "y": 0, "w": 800, "h": 768, "fx": { "opacity": 0.6, "feather": 40 } },
-        "Signal Bar":  { "x": 0, "y": 680, "w": 814, "h": 88, "fx": { "glitchAmt": 80 }, "motion": "bounce" }
+        "Glitch*": {
+          "preset": "glitch",
+          "fx": {
+            "scale": 1,
+            "rotation": 0,
+            "motionAmt": 16
+          },
+          "motion": "shake"
+        },
+        "Sortstorm*": {
+          "preset": "glitch",
+          "fx": {
+            "scale": 1,
+            "rotation": 0,
+            "motionAmt": 16
+          },
+          "motion": "shake"
+        },
+        "Vhs*": {
+          "preset": "vhs",
+          "fx": {
+            "scale": 1,
+            "rotation": 0,
+            "motionAmt": 16
+          },
+          "motion": "shake"
+        },
+        "Riso*": {
+          "preset": "glitch",
+          "fx": {
+            "scale": 1,
+            "rotation": 0,
+            "motionAmt": 16
+          },
+          "motion": "shake"
+        },
+        "Matrixtv*": {
+          "preset": "vhs",
+          "fx": {
+            "scale": 1,
+            "rotation": 0,
+            "motionAmt": 16
+          },
+          "motion": "shake"
+        },
+        "Strobe Core": {
+          "x": 7,
+          "y": 0,
+          "w": 800,
+          "h": 768,
+          "fx": {
+            "opacity": 0.6,
+            "feather": 40
+          }
+        },
+        "Signal Bar": {
+          "x": 0,
+          "y": 680,
+          "w": 814,
+          "h": 88,
+          "fx": {
+            "glitchAmt": 80
+          },
+          "motion": "bounce"
+        }
       }
     },
-    "global": { "grain": 0.18, "vignette": 0.35, "strobe": 0.38, "feedback": 0.06, "dim": 0.05 }
+    "global": {
+      "grain": 0.18,
+      "vignette": 0.35,
+      "strobe": 0.38,
+      "feedback": 0.06,
+      "dim": 0.05
+    }
   },
   "perform": {
-    "cycle": true, "holdBars": 3, "blendBars": 1,
-    "chain": [ { "song": 1, "loops": 1 }, { "song": 2, "loops": 2 }, { "song": 4, "loops": 1 },
-               { "song": 5, "loops": 2 }, { "song": 3, "loops": 1 }, { "song": 2, "loops": 1 } ],
+    "cycle": true,
+    "holdBars": 3,
+    "blendBars": 1,
+    "chain": [
+      {
+        "song": 1,
+        "loops": 1
+      },
+      {
+        "song": 2,
+        "loops": 2
+      },
+      {
+        "song": 4,
+        "loops": 1
+      },
+      {
+        "song": 5,
+        "loops": 2
+      },
+      {
+        "song": 3,
+        "loops": 1
+      },
+      {
+        "song": 2,
+        "loops": 1
+      }
+    ],
     "chainLoop": true,
-    "autopilot": "storm", "autopilotGain": 0.6
+    "autopilot": "storm",
+    "autopilotGain": 0.6
   }
 }

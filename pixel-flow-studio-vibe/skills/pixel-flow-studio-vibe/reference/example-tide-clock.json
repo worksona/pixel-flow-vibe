@@ -1,4 +1,6 @@
 {
+  "title": "Tide Clock",
+  "about": "Kick lights the moon, hats glint on the water, bass makes the stars twinkle, and the Morph lane turns the tide.",
   "ui": {
     "swing": 0.08,
     "mod": {
@@ -60,7 +62,7 @@
           "smearAng": 1.57,
           "echoCount": 2,
           "echoDecay": 0.45,
-          "feather": 34,
+          "feather": 16,
           "opacity": 0.7,
           "blend": "screen"
         }
@@ -95,7 +97,7 @@
         },
         "fx": {
           "bloomAmt": 1,
-          "feather": 18,
+          "feather": 10,
           "opacity": 0.92,
           "blend": "screen",
           "czoom": 18
@@ -154,7 +156,7 @@
           "h": 190,
           "fx": {
             "bloomAmt": 1,
-            "feather": 26,
+            "feather": 14,
             "czoom": 22
           }
         },

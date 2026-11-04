@@ -249,6 +249,13 @@ def expand_scenes(st, no_scene_ids):
         out[key] = snaps
     st["scenes"] = out
 
+def validate_meta(cfg):
+    for k, n in (("title", 80), ("by", 60), ("about", 160)):
+        v = cfg.get(k)
+        if v is None: continue
+        if not isinstance(v, str): warn("%s must be text" % k)
+        elif len(v) > n: warn("%s is %d characters; the app keeps the first %d" % (k, len(v), n))
+
 def validate_perform(cfg):
     p = cfg.get("perform")
     if p is None: return
@@ -303,6 +310,7 @@ def validate(cfg):
             elif len(a) not in (16, 32, 64): warn("%s %s: %d steps (use 16, 32 or 64)" % (where, l, len(a)))
     if len(cfg["state"]["zones"]) > 24: warn("%d zones — over ~24 the frame rate drops" % len(cfg["state"]["zones"]))
     validate_perform(cfg)
+    validate_meta(cfg)
 
 # ---------------------------------------------------------------- codec
 def b64(s): return base64.b64encode(s.encode("utf-8")).decode("ascii")
@@ -391,6 +399,7 @@ def main():
             ext = a.image.rsplit(".", 1)[-1].lower(); mime = {"jpg": "jpeg"}.get(ext, ext)
             src["image"] = "data:image/%s;base64,%s" % (mime, base64.b64encode(open(a.image, "rb").read()).decode("ascii"))
     validate(cfg)
+    if a.kiosk and not cfg.get("title"): warn("kiosk link without a title: the landing page will say 'Untitled look' (add \"title\")")
     for w in warnings: sys.stderr.write("warn: " + w + "\n")
     if a.check:
         print("ok" if not warnings else "%d warning(s)" % len(warnings)); return

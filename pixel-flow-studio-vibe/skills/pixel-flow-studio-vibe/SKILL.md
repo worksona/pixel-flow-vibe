@@ -45,11 +45,13 @@ App: `v1/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live at
    ```
    Fix every `warn:` before handing over a link (an unknown name is silently dropped by the app).
    If `$CLAUDE_PLUGIN_ROOT` is unset, use the path of this skill folder.
-5. **Deliver**: the clickable link (the a47l.com short link from `--short`; if it warns that
+5. **Title it.** Every `--kiosk` link opens on a landing page, so give the config a `title` (and
+   a one-line `about` saying what to watch or listen for); the encoder warns when it's missing.
+6. **Deliver**: the clickable link (the a47l.com short link from `--short`; if it warns that
    shortening was unavailable, hand over the full link it printed instead), one line on what's on screen, and 2–3 knobs to ask for next
    ("faster", "more glitch on the snare", "make the orbs bigger"). Mention **⌘K** and **?** in
    the app, and that **C** copies a share link of whatever they tweak.
-6. **Iterate** by patching the previous JSON (keep it in the temp file) and re-encoding. Small
+7. **Iterate** by patching the previous JSON (keep it in the temp file) and re-encoding. Small
    deltas: retune a param, swap a preset, change a motion, change the layout. If the user pastes
    a Studio link, run `encode.py --decode '<link>'` first and remix from that.
 
