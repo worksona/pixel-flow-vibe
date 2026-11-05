@@ -128,6 +128,12 @@ Theme recipes pair a style with a pattern; see `reference/themes.md` for the the
 | `firewheel` | Fire Wheel | Nature | wedges | Embers spinning in eight wedges |
 | `auroradrift` | Northern Lights | Nature | scatter | Aurora colours drifting with particles |
 | `stormtrailer` | Storm | Nature | full | Lightning cuts in black and white |
+| `hazeveils` | Haze Veils | Ambient | stack | Three lavender layers drifting through each other, fading in one by one |
+| `tidepool` | Tidepool | Ambient | stack | Water light in slow layers, rippling over each other |
+| `moonblooms` | Moon Blooms | Ambient | scatter | Silver orbs of light swelling slowly, with long trails |
+| `lanterns` | Lanterns | Ambient | scatter | Warm paper-lantern glows floating and fading |
+| `duskundertow` | Dusk Undertow | Ambient | stack | A rose-violet push-in with a ghosted layer a moment behind |
+| `pearldream` | Pearl Dream | Ambient | stack | Pastel shimmer pulled slowly forward under its own echo |
 | `halloweentape` | Halloween Tape | Occasions | full | Pumpkin and violet tape that jumps on the beat |
 | `wintersnow` | Snowfall | Occasions | scatter | Frosted shapes and falling specks |
 | `pridewheel` | Pride Wheel | Occasions | wedges | Every colour turning together |

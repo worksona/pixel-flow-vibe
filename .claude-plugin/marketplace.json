@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Skills & tools for the Pixel Flow visual instruments.",
-    "version": "1.4.0"
+    "version": "1.5.0"
   },
   "plugins": [
     {
@@ -20,7 +20,7 @@
       "name": "pixel-flow-studio-vibe",
       "source": "./pixel-flow-studio-vibe",
       "description": "Vibe a whole Pixel Flow Studio screen with words: layout of zones, presets, motion, groove, post FX, and a shareable link (kiosk-ready).",
-      "version": "1.4.1",
+      "version": "1.5.0",
       "category": "creative"
     }
   ]

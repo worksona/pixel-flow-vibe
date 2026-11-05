@@ -20,7 +20,7 @@ App: `apps/studio/pixel-flow-studio-pro.html` in **worksona/pixel-flow** · live
   groove, mod-matrix and post FX. 56 stock recipes ship in the app (`reference/recipes.md`).
 - A **style** is a whole-screen look (grade, letterbox, film grain, dust, halation, palette); a **pattern** is
   layout + timing (cuts, holds, push-ins). **recipe = pattern × style × source.** Themes group them:
-  Movie, Music, Nature, Occasions, Stage (`reference/themes.md`, `encode.py --list`).
+  Movie, Music, Nature, Ambient, Occasions, Stage (`reference/themes.md`, `encode.py --list`).
 - A 64-step **sequencer** (Kick Snare Hat Bass Glitch Morph Visual) drives a small synth and,
   through the **mod matrix**, punches visual params on each hit. Mic FFT can do the same.
 

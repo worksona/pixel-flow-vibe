@@ -94,6 +94,30 @@ Patterns: `slowburn` · `drift` · `wheel` · `trailer`
 | `auroradrift` | Northern Lights | aurora × drift | Aurora colours drifting with particles |
 | `stormtrailer` | Storm | storm × trailer | Lightning cuts in black and white |
 
+## Ambient
+
+Slow, layered and dreamy: low tempos, 16-bar holds, soft blends, and layers that fade in one at a time. Every Ambient pattern plays the `Slow pulse` groove and silences the Glitch, Morph and Visual trigger lanes.
+
+| style | grade | frame | feel |
+|---|---|---|---|
+| `haze` Haze | Haze | none | lavender fog, lifted blacks · adds bloom to every zone |
+| `moonglow` Moonglow | Moonlight | none | silver-blue night light · adds bloom |
+| `dusk` Dusk | Dusk | none | rose and violet after sunset |
+| `tidepool` Tidepool | Ocean | none | slow light under water |
+| `lantern` Lantern | Warm fade | none | warm paper-lantern glow |
+| `pearl` Pearl | Pastel | none | pearl and pastel shimmer · adds bloom |
+
+Patterns: `veils` · `blooms` · `undertow` · `drift` · `calm`
+
+| recipe | name | style × pattern | what you see |
+|---|---|---|---|
+| `hazeveils` | Haze Veils | haze × veils | Three lavender layers drifting through each other, fading in one by one |
+| `tidepool` | Tidepool | tidepool × veils | Water light in slow layers, rippling over each other |
+| `moonblooms` | Moon Blooms | moonglow × blooms | Silver orbs of light swelling slowly, with long trails |
+| `lanterns` | Lanterns | lantern × blooms | Warm paper-lantern glows floating and fading |
+| `duskundertow` | Dusk Undertow | dusk × undertow | A rose-violet push-in with a ghosted layer a moment behind |
+| `pearldream` | Pearl Dream | pearl × undertow | Pastel shimmer pulled slowly forward under its own echo |
+
 ## Occasions
 
 Parties, seasons and celebrations.
@@ -145,6 +169,9 @@ Patterns: `calm` · `slowburn` · `drift`
 | `drift` | Drift | scatter(5,ellipse) | 84 | 8 / 4 | five soft shapes wandering slowly |
 | `wheel` | Wheel | wedges | 118 | 4 / 2 | eight hue-spun wedges turning together |
 | `calm` | Calm | full | 70 | 8 / 8 | one quiet field behind speakers, no strobe |
+| `veils` | Veils | stack(3) | 60 | 16 / 8 | three full-frame layers drifting through each other, fading in one at a time · trigger lanes silent |
+| `blooms` | Blooms | scatter(6,ellipse) | 56 | 16 / 8 | six soft orbs of light swelling slowly, with long trails · trigger lanes silent |
+| `undertow` | Undertow | stack(2) | 64 | 16 / 8 | a slow push-in, with a ghosted copy of the picture drifting a moment behind · trigger lanes silent |
 
 ## Vibe → theme
 
@@ -160,6 +187,9 @@ Read a sentence as **style + pattern + source + energy**, then patch one field p
 | "same, but Technicolor" | `technicolor` | unchanged | patch `theme.style` only |
 | "calm background for my talk" | `calmstage` or `keynote` | `calm` | no strobe, dim |
 | "techno wall" | `techno` | `pulsegrid` | presets `glitch`,`tiles`,`pulse` |
+| "slow, dreamy, layered" | `haze` or `pearl` | `veils` | presets `dream`,`smoke`,`lumen` |
+| "ambient bed for a chill-out room" | `moonglow` or `lantern` | `blooms` | 56 BPM, no strobe |
+| "sunset, slowly pulling in" | `dusk` | `undertow` | presets `liquid`,`ghost` |
 
 **Movies**: a link cannot carry a video file. Say so, and tell them to press **⌘I** (or Source ▸ Import image / movie) after the link opens. The clip plays with sound, its soundtrack drives the visuals (⌥D toggles), and **J** plays / pauses. Use `--wide` for film work: recordings then come out 1280×720.
 
@@ -167,7 +197,7 @@ Read a sentence as **style + pattern + source + energy**, then patch one field p
 
 | key | values | what it does |
 |---|---|---|
-| `grade` | `none` `mono-hard` `mono-soft` `sepia` `technicolor` `warm-fade` `teal-orange` `green-code` `vhs-wash` `pastel` `synth` `ice` `ember` `ocean` `forest` `aurora` `vivid` `halloween` `gold` `calm` `brand` | colour grade over the whole stage |
+| `grade` | `none` `mono-hard` `mono-soft` `sepia` `technicolor` `warm-fade` `teal-orange` `green-code` `vhs-wash` `pastel` `synth` `ice` `ember` `ocean` `forest` `aurora` `vivid` `halloween` `gold` `calm` `brand` `haze` `moon` `dusk` | colour grade over the whole stage |
 | `frame` | `none` `2.39` `1.85` `16:9` `1.37` `4:3` `1:1` | letterbox shape; bars are black and sit over everything |
 | `fit` | `fill` `fit` | a movie or camera fills the frame, or fits whole inside it |
 | `weave` | 0–1 | projector gate wobble |
